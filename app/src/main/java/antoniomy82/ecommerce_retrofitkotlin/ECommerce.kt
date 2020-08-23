@@ -1,7 +1,7 @@
 package antoniomy82.ecommerce_retrofitkotlin
 
 
-class Post(
+class Ecommerce(
     var slug: String? = null,
     var name: String? = null,
     var category: String? = null,

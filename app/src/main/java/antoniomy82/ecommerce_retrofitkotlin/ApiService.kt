@@ -7,5 +7,5 @@ import retrofit2.http.GET
 interface ApiService {
 
     @GET("?category")
-    fun getAllPosts(): Call<List<Post>>
+    fun getAllPosts(): Call<List<Ecommerce>>
 }
