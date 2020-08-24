@@ -18,18 +18,27 @@
 
         <TextView
             android:id="@+id/tvNombre"
-            android:layout_width="195dp"
+            android:layout_width="338dp"
             android:layout_height="35dp"
             android:text="@string/tvname"
             android:textAlignment="textStart"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tvSlug"
-            android:layout_width="196dp"
+            android:id="@+id/tvDireccion"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="@string/tvslug" />
+            android:text="@string/tvDireccion"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvDistancia"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/tvDistancia"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

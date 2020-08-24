@@ -4,8 +4,11 @@
     <string name="tv_bienvenido">Bienvenido</string>
     <string name="bt_mostrar_resultados">Mostrar resultados</string>
     <string name="tvname">tvName</string>
-    <string name="tvslug">tvSlug</string>
+    <string name="tvDireccion">C/XXX, YYYY, (ZZZ)</string>
+    <string name="tvDistancia">0 Km</string>
     <string name="tvLoad">Cargando resultados... por favor espere...</string>
+    <string name="edDireccion">"Obtener dirección GPS, pulse icono inferior"</string>
+    <string name="imGPS">Obtener ubicación GPS</string>
 
     <string-array name="Categories">
         <item>SHOPPING</item>

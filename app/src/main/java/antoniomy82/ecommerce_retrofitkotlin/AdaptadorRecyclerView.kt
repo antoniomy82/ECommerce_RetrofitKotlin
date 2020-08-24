@@ -42,12 +42,23 @@ class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerc
 
     //Asignamos los datos a cada elemento de la lista
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val ecommerce = listaCopia!!.get(position) // Cargamos los elementos
+        val ecommerce = listaCopia!![position] // Cargamos los elementos
         val miViewHolder = holder as ViewHolder?
 
+        val direccion: String = ecommerce.address!!.street.toString() + " , " + ecommerce.address!!.city + " , ("+ ecommerce.address!!.country+")"
+        val distancia: String
+        if (ecommerce.distance==null){
+            distancia="Distancia: 0 Km"
+        }
+        else{
+            distancia="Distancia: "+ ecommerce.distance.toString() + " Km"
+        }
+
+
         if (miViewHolder != null) {
-            miViewHolder.tvNombre.setText(ecommerce.name)
-            miViewHolder.tvSlug.setText(ecommerce.slug)
+            miViewHolder.tvNombre.text = ecommerce.name
+            miViewHolder.tvDireccion.text = direccion
+            miViewHolder.tvDistancia.text = distancia
         }
 
 
@@ -71,13 +82,11 @@ class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerc
 
     //Definimos nuestro holder, en base a los campos que tenemos en nuestros "item"
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var tvNombre: TextView
-        var tvSlug : TextView//ListView
 
-        init {
-            tvNombre = itemView.findViewById(R.id.tvNombre)
-            tvSlug = itemView.findViewById(R.id.tvSlug) //ListView
-        }
+        var tvNombre: TextView = itemView.findViewById(R.id.tvNombre)
+        var tvDireccion : TextView = itemView.findViewById(R.id.tvDireccion)//ListView
+        var tvDistancia : TextView = itemView.findViewById(R.id.tvDistancia)
+
     }
 
     //Barra de búsqueda

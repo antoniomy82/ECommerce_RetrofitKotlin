@@ -1,12 +1,20 @@
 package antoniomy82.ecommerce_retrofitkotlin
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.motion.widget.Debug.getLocation
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,11 +26,12 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var service: ApiService
     private val URL = "http://prod.klikin.com/commerces/public/"
-    var tv_user: TextView? = null
-    var str:String = ""
+
     var myCategory:String?=null
     private var tvLoad:TextView? =null
     private var btResult:Button? = null
+    private var edDireccion: EditText? = null
+    private var miUbicacion:Location?=null
 
 
     companion object{
@@ -36,12 +45,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-       // tv_user = findViewById(R.id.tv_users)
-      // var  tv_selectCategoria=findViewById(R.id.tv_SelectCategory)
+
         val spCateory:Spinner=findViewById(R.id.sp_category) //Acceso al spiner
         val categorias=resources.getStringArray(R.array.Categories) //Acceso a lista de items
         btResult=findViewById(R.id.bt_resultado)
         tvLoad=findViewById(R.id.tvLoad)
+        edDireccion = findViewById(R.id.edDireccion)
 
         if(spCateory!=null){
             val sp_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
@@ -71,6 +80,8 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
         }
 
+        //Cuando obtenemos la dirección GPS
+        findViewById<View>(R.id.imGPS).setOnClickListener { gps() }
     }
 
 
@@ -108,12 +119,16 @@ class MainActivity : AppCompatActivity() {
                             comercios[i].social,
                             comercios[i].logo
                         ))
+                       if(comercios[i].latitude!=null && comercios[i].longitude!=null)
+                       {
+                           comercios[i].myLocation!=getLocation (comercios[i].latitude!!, comercios[i].longitude!!, comercios[i].name!!)
+                       }
                         contador++
                     }
                 }
                 tvLoad?.visibility= View.INVISIBLE
                 btResult?.visibility= View.VISIBLE
-                Toast.makeText(this@MainActivity, myCategory+ " : "+contador+ "  coincidencias " , Toast.LENGTH_LONG).show()
+                Toast.makeText(this@MainActivity, "$myCategory : $contador  coincidencias ", Toast.LENGTH_LONG).show()
             }
 
             override fun onFailure(call: Call<List<Ecommerce>>?, t: Throwable?) {
@@ -121,6 +136,71 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+    fun getLocation (latitude:Double, longitude:Double, name:String): Location {
+        val myLocation = Location(name)
+        myLocation.latitude = latitude
+        myLocation.longitude= longitude
+
+        return myLocation
+    }
+
+    /*
+
+    //Ordenamos la lista de contactos por nombre
+    fun ordenarListaContactos(lista: java.util.ArrayList<Contactos>?) {
+        lista!!.sortWith(Comparator { c1, c2 -> c1.nombre.compareTo(c2.nombre) })
+        listaContactos = lista
+    }
+*/
+
+    /**
+     * Dialog to Enable GPS
+     */
+    fun gps() {
+        val address: String //Use to paint GeoLocation in edText or Toast
+        val gps = GPSTracker(applicationContext, this)
+
+        //Check GPS Permissions
+        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                applicationContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+
+        } else { //Tengo permisos
+            if (gps.canGetLocation()) { //I have GPS enable
+                val latitude: Double = gps.getLatitude()
+                val longitude: Double = gps.getLongitude()
+
+                miUbicacion= getLocation(gps.getLatitude(),gps.getLongitude(),"miUbicacion") //Obtengo mi location
+
+                // \n is for new line
+                Toast.makeText(applicationContext, "Ubicación - \nLat: $latitude\nLong: $longitude", Toast.LENGTH_LONG).show()
+                address = gps.getLocationAddress(latitude, longitude)
+                edDireccion!!.setText(address)
+
+            } else { dialogNoGPS() }//GPS deshabilitado o no tengo GPS
+        }
+    } //onClick
+
+
+    //GPS desactivado
+    private fun dialogNoGPS() {
+        val dialog = AlertDialog.Builder(this)
+        dialog.setCancelable(false)
+        dialog.setTitle("GPS DESACTIVADO")
+        dialog.setMessage("¿Desea activar GPS?")
+        dialog.setPositiveButton("Aceptar") { dialog, id ->
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            this.startActivity(intent)
+        }
+            .setNegativeButton("Cancelar ") { dialog, which -> //Action for "Cancel".
+                dialog.cancel()
+            }
+        val alert = dialog.create()
+        alert.show()
+    }
+
 
 }
 
