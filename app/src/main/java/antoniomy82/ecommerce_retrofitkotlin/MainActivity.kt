@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.provider.Settings
@@ -19,10 +18,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.Arrays.sort
-import java.util.Collections.sort
 
 
+@Suppress("NAME_SHADOWING")
 class MainActivity : AppCompatActivity() {
 
     lateinit var service: ApiService
@@ -37,10 +35,13 @@ class MainActivity : AppCompatActivity() {
 
 
     companion object{
-        private var categoryList:ArrayList<Ecommerce>?=null
+        private var ecommerceList:ArrayList<Ecommerce>?=null
 
-        fun getCategoryList(): ArrayList<Ecommerce> {
-            return categoryList!!
+        fun getEcommerceList(): ArrayList<Ecommerce> {
+            return ecommerceList!!
+        }
+        fun getEcommerce(indice: Int): Ecommerce {
+            return ecommerceList!![indice]
         }
     }
 
@@ -57,10 +58,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        if(spCateory!=null){
-            val sp_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
-            spCateory.adapter = sp_adapter
-        }
+        val sp_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
+        spCateory.adapter = sp_adapter
+
 
 
         //Spinner Categoria
@@ -70,8 +70,8 @@ class MainActivity : AppCompatActivity() {
                 tvLoad?.visibility = View.VISIBLE
                 btResult?.visibility= View.INVISIBLE
                 //Inicalizo valores
-                categoryList=null
-                edDireccion?.setText("Pulse icono GPS y obtenga su dirección")
+                ecommerceList=null
+                edDireccion?.setText(R.string.aviso_gps)
                 miUbicacion=null
                 imGPS?.visibility=View.INVISIBLE
 
@@ -117,18 +117,18 @@ class MainActivity : AppCompatActivity() {
         //Creamos el servicio para hacer las llamadas
         service = retrofit.create<ApiService>(ApiService::class.java)
 
-        categoryList=ArrayList<Ecommerce>() //Inicializo
+        ecommerceList=ArrayList<Ecommerce>() //Inicializo
 
         service.getAllPosts().enqueue(object : Callback<List<Ecommerce>> {
             override fun onResponse(call: Call<List<Ecommerce>>?, response: Response<List<Ecommerce>>?) {
 
                 val comercios = response?.body()
                 val lenght: Int = comercios!!.size
-                var contador:Int = 0
+                var contador = 0
 
                 for (i:Int in 0 until lenght){
                    if(myCategory==(comercios.get(i).category.toString())){
-                        categoryList?.add(Ecommerce(
+                        ecommerceList?.add(Ecommerce(
                             comercios[i].slug,
                             comercios[i].name,
                             comercios[i].category,
@@ -164,20 +164,20 @@ class MainActivity : AppCompatActivity() {
 
     //Relleno las distancias respecto a la ubicación actual y ordeno la lista de ecomercios
     private fun sortByDistance() {
-        categoryList= getCategoryList()
-        val lenght: Int = categoryList!!.size
-        var contador:Int = 0;
+        ecommerceList= getEcommerceList()
+        val lenght: Int = ecommerceList!!.size
+        var contador = 0
 
         //Relleno las distancias entre el Smartphone y la ubicación del comercio.
         for (i: Int in 0 until lenght) {
-            if((miUbicacion!=null)&&(categoryList!!.get(i).myLocation!=null)){
-                categoryList!!.get(i).distance=(miUbicacion!!.distanceTo(categoryList!!.get(i).myLocation))
+            if((miUbicacion!=null)&&(ecommerceList!!.get(i).myLocation!=null)){
+                ecommerceList!!.get(i).distance=(miUbicacion!!.distanceTo(ecommerceList!!.get(i).myLocation))
                 contador++
             }
         }
 
         //Ordeno el ArrayList
-        categoryList!!.sortBy { it.distance }
+        ecommerceList!!.sortBy { it.distance }
     }
 
 
@@ -218,7 +218,7 @@ class MainActivity : AppCompatActivity() {
         dialog.setCancelable(false)
         dialog.setTitle("GPS DESACTIVADO")
         dialog.setMessage("¿Desea activar GPS?")
-        dialog.setPositiveButton("Aceptar") { dialog, id ->
+        dialog.setPositiveButton("Aceptar") { _, id ->
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             this.startActivity(intent)
         }

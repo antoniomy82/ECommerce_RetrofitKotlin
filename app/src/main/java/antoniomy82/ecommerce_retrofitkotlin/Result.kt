@@ -21,7 +21,7 @@ class Result : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.rvCategory) //Aquí definimos dónde tenemos la vista del recyclerView XML
         recyclerView!!.layoutManager = manager
-        adapter = AdaptadorRecyclerView(this, MainActivity.getCategoryList()) //lista linearLayout o grid para grid Layout
+        adapter = AdaptadorRecyclerView(this, MainActivity.getEcommerceList()) //lista linearLayout o grid para grid Layout
         recyclerView!!.adapter = adapter
     }
 }

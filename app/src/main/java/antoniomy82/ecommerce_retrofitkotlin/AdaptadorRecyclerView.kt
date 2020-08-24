@@ -1,6 +1,7 @@
 package antoniomy82.ecommerce_retrofitkotlin
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,7 +18,7 @@ import java.util.*
  *  Puedes descargar el código de mi Github : https://github.com/antoniomy82
  */
 
-class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerce>) : RecyclerView.Adapter<AdaptadorRecyclerView.ViewHolder>(), Filterable {
+class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerce>) : RecyclerView.Adapter<AdaptadorRecyclerView.ViewHolder>() {
 
     var listaFull: ArrayList<Ecommerce>?=null
     var listaCopia: ArrayList<Ecommerce>?=null
@@ -66,13 +67,13 @@ class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerc
 
         println("Bind View Holder: $position")
 
-       /*
+
         //Listener cuando clicamos en un item.
         miViewHolder.itemView.setOnClickListener {
-            val intent = Intent(context, ContactoDetalle::class.java) //Activity inicio, activity destino
+            val intent = Intent(context, DetailActivity::class.java) //Activity inicio, activity destino
             intent.putExtra("miIndice", position) //Envío la posición dentro de lista
             context.startActivity(intent)
-        }*/
+        }
       //  MainActivity.stopProgressBar()
     }
 
@@ -91,40 +92,5 @@ class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerc
 
     }
 
-    //Barra de búsqueda
-    override fun getFilter(): Filter {
-        return filtroBusqueda
-    }
 
-    //Resultados de busqueda
-    private val filtroBusqueda: Filter = object : Filter() {
-        override fun performFiltering(constraint: CharSequence): FilterResults {
-            val filteredList: MutableList<Ecommerce> =
-                ArrayList<Ecommerce>()
-            if (constraint.isEmpty()) {
-                listaFull?.let { filteredList.addAll(it) }
-            } else {
-                val filterPattern = constraint.toString().toLowerCase(Locale.ROOT).trim { it <= ' ' }
-
-                Log.d("ListaItems", listaFull?.size.toString())
-
-                for (item in listaFull!!) {
-                    if (item.name?.toLowerCase(Locale.ROOT)?.contains(filterPattern)!!) {
-                        Log.d("Item->", item.name!!)
-                        filteredList.add(item)
-                    }
-                }
-            }
-            val results = FilterResults()
-            results.values = filteredList
-            return results
-        }
-
-        override fun publishResults(constraint: CharSequence, results: FilterResults) {
-            //MainActivity.setEsBusqueda(listaFull) //Activamos un booleano para saber que tipo de carga hay que hacer y hacemos una copia de la lista de contactos
-            listaCopia?.clear()
-            listaCopia?.addAll(results.values as ArrayList<Ecommerce>)
-            notifyDataSetChanged()
-        }
-    }
 }

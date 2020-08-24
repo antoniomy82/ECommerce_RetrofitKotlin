@@ -10,6 +10,17 @@
     <string name="edDireccion">"Obtener dirección GPS, pulse icono inferior"</string>
     <string name="imGPS">Obtener ubicación GPS</string>
     <string name="tvCategoria">SHOPPING</string>
+    <string name="tv_Dnombre">Nombre_Detalle</string>
+    <string name="tv_Ddireccion">Direccion Detalle</string>
+    <string name="tv_Dcategoria">Categoria Detalle</string>
+    <string name="tv_Demail">Email detalle</string>
+    <string name="tv_Dtelefono">Telefono Detalle</string>
+    <string name="im_logo">Logo comercio</string>
+    <string name="im_google_maps">Ir Google Maps</string>
+    <string name="im_instagram">Ir a Instagram</string>
+    <string name="im_fb">Ir a Twitter</string>
+    <string name="im_twiter">Ir a Twitter</string>
+    <string name="aviso_gps">"Pulse icono GPS y obtenga su dirección"</string>
 
     <string-array name="Categories">
         <item>SHOPPING</item>
