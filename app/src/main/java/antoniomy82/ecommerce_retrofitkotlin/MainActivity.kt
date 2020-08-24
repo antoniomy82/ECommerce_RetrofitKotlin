@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.provider.Settings
@@ -18,6 +19,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Arrays.sort
+import java.util.Collections.sort
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private var btResult:Button? = null
     private var edDireccion: EditText? = null
     private var miUbicacion:Location?=null
+    private var imGPS:ImageView?=null
 
 
     companion object{
@@ -49,8 +53,9 @@ class MainActivity : AppCompatActivity() {
         btResult=findViewById(R.id.bt_resultado)
         tvLoad=findViewById(R.id.tvLoad)
         edDireccion = findViewById(R.id.edDireccion)
+        imGPS=findViewById(R.id.imGPS)
 
-        categoryList=ArrayList<Ecommerce>() //Inicializo
+
 
         if(spCateory!=null){
             val sp_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
@@ -59,29 +64,45 @@ class MainActivity : AppCompatActivity() {
 
 
         //Spinner Categoria
-        spCateory.setOnItemSelectedListener(object : OnItemSelectedListener {
+        spCateory.onItemSelectedListener = object : OnItemSelectedListener {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                 tvLoad?.visibility = View.VISIBLE
                 btResult?.visibility= View.INVISIBLE
+                //Inicalizo valores
+                categoryList=null
+                edDireccion?.setText("Pulse icono GPS y obtenga su dirección")
+                miUbicacion=null
+                imGPS?.visibility=View.INVISIBLE
 
                 myCategory=categorias[position]
+
                 getAll() //Realizo el parseo
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        })
+        }
 
         tvLoad?.visibility = View.VISIBLE
 
 
         btResult?.setOnClickListener {
+            if(miUbicacion==null){
+                tvLoad?.visibility = View.VISIBLE
+            }
+            else {
                 val intent = Intent(applicationContext, Result::class.java)
                 startActivity(intent)
+            }
         }
 
         //Cuando obtenemos la dirección GPS
-        findViewById<View>(R.id.imGPS).setOnClickListener { gps() }
+        findViewById<View>(R.id.imGPS).setOnClickListener { gps()
+            if (miUbicacion!=null) {
+                tvLoad?.visibility = View.INVISIBLE
+                btResult?.visibility = View.VISIBLE
+            }
+        }
     }
 
 
@@ -95,7 +116,8 @@ class MainActivity : AppCompatActivity() {
 
         //Creamos el servicio para hacer las llamadas
         service = retrofit.create<ApiService>(ApiService::class.java)
-       // categoryList=ArrayList<Ecommerce>() //Inicializo
+
+        categoryList=ArrayList<Ecommerce>() //Inicializo
 
         service.getAllPosts().enqueue(object : Callback<List<Ecommerce>> {
             override fun onResponse(call: Call<List<Ecommerce>>?, response: Response<List<Ecommerce>>?) {
@@ -121,7 +143,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 tvLoad?.visibility= View.INVISIBLE
-                btResult?.visibility= View.VISIBLE
+                btResult?.visibility= View.INVISIBLE
+                imGPS?.visibility=View.VISIBLE
                 Toast.makeText(this@MainActivity, "$myCategory : $contador  coincidencias ", Toast.LENGTH_LONG).show()
             }
 
@@ -131,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    fun getLocation (latitude:Double, longitude:Double, name:String): Location {
+    private fun getLocation (latitude:Double, longitude:Double, name:String): Location {
         val myLocation = Location(name)
         myLocation.latitude = latitude
         myLocation.longitude= longitude
@@ -139,11 +162,13 @@ class MainActivity : AppCompatActivity() {
         return myLocation
     }
 
-    fun sortByLocation() {
+    //Relleno las distancias respecto a la ubicación actual y ordeno la lista de ecomercios
+    private fun sortByDistance() {
         categoryList= getCategoryList()
         val lenght: Int = categoryList!!.size
         var contador:Int = 0;
 
+        //Relleno las distancias entre el Smartphone y la ubicación del comercio.
         for (i: Int in 0 until lenght) {
             if((miUbicacion!=null)&&(categoryList!!.get(i).myLocation!=null)){
                 categoryList!!.get(i).distance=(miUbicacion!!.distanceTo(categoryList!!.get(i).myLocation))
@@ -151,23 +176,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        Toast.makeText(this@MainActivity, " $contador  ordenados ", Toast.LENGTH_LONG).show()
+        //Ordeno el ArrayList
+        categoryList!!.sortBy { it.distance }
     }
 
-
-    /*
-
-    //Ordenamos la lista de contactos por nombre
-    fun ordenarListaContactos(lista: java.util.ArrayList<Contactos>?) {
-        lista!!.sortWith(Comparator { c1, c2 -> c1.nombre.compareTo(c2.nombre) })
-        listaContactos = lista
-    }
-*/
 
     /**
      * Dialog to Enable GPS
      */
-    fun gps() {
+    private fun gps() {
         val address: String //Use to paint GeoLocation in edText or Toast
         val gps = GPSTracker(applicationContext, this)
 
@@ -183,10 +200,10 @@ class MainActivity : AppCompatActivity() {
                 val longitude: Double = gps.getLongitude()
 
                 miUbicacion= getLocation(gps.getLatitude(),gps.getLongitude(),"miUbicacion") //Obtengo mi location
-                sortByLocation()
+                sortByDistance()
 
                 // \n is for new line
-                Toast.makeText(applicationContext, "Ubicación - \nLat: $latitude\nLong: $longitude", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "eComercios más próximos ¡calculados!", Toast.LENGTH_LONG).show()
                 address = gps.getLocationAddress(latitude, longitude)
                 edDireccion!!.setText(address)
 
