@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">eCommerces</string>
     <string name="tv_selectCategoria">Seleccione categoría :</string>
     <string name="tv_bienvenido">Bienvenido</string>
@@ -6,9 +6,10 @@
     <string name="tvname">tvName</string>
     <string name="tvDireccion">C/XXX, YYYY, (ZZZ)</string>
     <string name="tvDistancia">0 Km</string>
-    <string name="tvLoad">Cargando resultados... por favor espere...</string>
+    <string name="tvLoad" tools:ignore="TypographyEllipsis">Cargando resultados… por favor espere...</string>
     <string name="edDireccion">"Obtener dirección GPS, pulse icono inferior"</string>
     <string name="imGPS">Obtener ubicación GPS</string>
+    <string name="tvCategoria">SHOPPING</string>
 
     <string-array name="Categories">
         <item>SHOPPING</item>
