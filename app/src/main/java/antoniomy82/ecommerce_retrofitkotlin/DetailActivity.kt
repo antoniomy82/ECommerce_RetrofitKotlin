@@ -1,3 +1,4 @@
+
 package antoniomy82.ecommerce_retrofitkotlin
 
 import android.app.AlertDialog
@@ -8,7 +9,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.URLUtil
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 
@@ -31,7 +31,7 @@ class DetailActivity : AppCompatActivity() {
 
 
         miEcommerce=MainActivity.getEcommerce(intent.getIntExtra("miIndice",0))
-        val direccion:String =miEcommerce!!.address!!.street+ ", " + miEcommerce!!.address!!.city+ " , "+miEcommerce!!.address!!.zip+ " ( "+miEcommerce!!.address!!.country+")"
+        val direccion:String =miEcommerce!!.address!!.street+ ", " + miEcommerce!!.address!!.zip+ " , "+miEcommerce!!.address!!.city+ ","+miEcommerce!!.address!!.country
 
         //im_Dlogo!!.setImageResource(miEcommerce!!.logo!!.url)
         tv_Dnombre!!.text=miEcommerce!!.name
@@ -42,7 +42,13 @@ class DetailActivity : AppCompatActivity() {
 
 
         findViewById<View>(R.id.imMaps).setOnClickListener {
-            gpsDialog()
+            if (miEcommerce?.myLocation != null) {
+                val intentUri = Uri.parse("geo:"+miEcommerce?.latitude+"?z=16&q="+miEcommerce?.longitude+"("+miEcommerce?.address?.street+","+miEcommerce?.address?.city+","+miEcommerce?.address?.country+")")
+                val intent = Intent(Intent.ACTION_VIEW, intentUri)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "No hay dirección o esta en formato incorrecto", Toast.LENGTH_LONG).show()
+            }
         }
 
 
@@ -77,51 +83,5 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-    }
-
-    //Alert dialog seleccionar línea a llamar
-    fun gpsDialog() {
-        val dialog = AlertDialog.Builder(this)
-        val items = arrayOfNulls<CharSequence>(2)
-
-        items[0] = "Explorar la dirección"
-        items[1] = "Ver solo su ubicación geográfica"
-        dialog.setTitle("Como desea mostrar Maps")
-        dialog.setItems(items) { dialog, which ->
-            if (which == 0) {
-                if (miEcommerce?.myLocation != null) {
-                    val miPosicion = miEcommerce?.myLocation
-                    val miGeoPosicion: String? = miPosicion.toString()
-
-                    val intentUri = Uri.parse("geo:$miGeoPosicion")
-                    val intent = Intent(Intent.ACTION_VIEW, intentUri)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        "No hay dirección o esta en formato incorrecto",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-            if (which == 1) {
-                if (miEcommerce?.myLocation != null) {
-                    val direccion = "Ubicación de " + miEcommerce?.name
-                    val miGeoPosicion: String? = miEcommerce?.myLocation.toString()
-
-
-                    val intentUri =
-                        Uri.parse("geo:$miGeoPosicion?z=16&q=$miGeoPosicion(<$direccion>)")
-                    val intent = Intent(Intent.ACTION_VIEW, intentUri)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        "No hay dirección o esta en formato incorrecto",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
     }
 }
