@@ -6,13 +6,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.motion.widget.Debug.getLocation
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import retrofit2.Call
@@ -51,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         btResult=findViewById(R.id.bt_resultado)
         tvLoad=findViewById(R.id.tvLoad)
         edDireccion = findViewById(R.id.edDireccion)
+
+        categoryList=ArrayList<Ecommerce>() //Inicializo
 
         if(spCateory!=null){
             val sp_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
@@ -95,9 +95,7 @@ class MainActivity : AppCompatActivity() {
 
         //Creamos el servicio para hacer las llamadas
         service = retrofit.create<ApiService>(ApiService::class.java)
-        categoryList=ArrayList<Ecommerce>() //Inicializo
-
-        categoryList=ArrayList<Ecommerce>() //Inicializo
+       // categoryList=ArrayList<Ecommerce>() //Inicializo
 
         service.getAllPosts().enqueue(object : Callback<List<Ecommerce>> {
             override fun onResponse(call: Call<List<Ecommerce>>?, response: Response<List<Ecommerce>>?) {
@@ -119,10 +117,6 @@ class MainActivity : AppCompatActivity() {
                             comercios[i].social,
                             comercios[i].logo
                         ))
-                       if(comercios[i].latitude!=null && comercios[i].longitude!=null)
-                       {
-                           comercios[i].myLocation!=getLocation (comercios[i].latitude!!, comercios[i].longitude!!, comercios[i].name!!)
-                       }
                         contador++
                     }
                 }
@@ -144,6 +138,22 @@ class MainActivity : AppCompatActivity() {
 
         return myLocation
     }
+
+    fun sortByLocation() {
+        categoryList= getCategoryList()
+        val lenght: Int = categoryList!!.size
+        var contador:Int = 0;
+
+        for (i: Int in 0 until lenght) {
+            if((miUbicacion!=null)&&(categoryList!!.get(i).myLocation!=null)){
+                categoryList!!.get(i).distance=(miUbicacion!!.distanceTo(categoryList!!.get(i).myLocation))
+                contador++
+            }
+        }
+
+        Toast.makeText(this@MainActivity, " $contador  ordenados ", Toast.LENGTH_LONG).show()
+    }
+
 
     /*
 
@@ -173,6 +183,7 @@ class MainActivity : AppCompatActivity() {
                 val longitude: Double = gps.getLongitude()
 
                 miUbicacion= getLocation(gps.getLatitude(),gps.getLongitude(),"miUbicacion") //Obtengo mi location
+                sortByLocation()
 
                 // \n is for new line
                 Toast.makeText(applicationContext, "Ubicación - \nLat: $latitude\nLong: $longitude", Toast.LENGTH_LONG).show()

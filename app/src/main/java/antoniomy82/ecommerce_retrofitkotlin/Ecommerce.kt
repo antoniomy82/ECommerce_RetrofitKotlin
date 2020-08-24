@@ -13,9 +13,19 @@ class Ecommerce(
     var contact: MyContact? = null,
     var social: MySocial? = null,
     var logo: MyLogo? = null,
-    var myLocation: Location?= null,
+    var myLocation: Location? = null,
     var distance: Float?=null
-)
+){
+    init {
+        //Cargo el valor Location para calcular distancias
+        if(latitude!=null && longitude!=null) {
+            this.myLocation= Location(this.name)
+            this.myLocation?.latitude = this.latitude!!
+            this.myLocation?.longitude = this.longitude!!
+        }
+    }
+}
+
 
 //Clases adicionales
 class MyAddress(val street: String, val country: String, val city: String, val zip: String)

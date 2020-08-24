@@ -46,14 +46,7 @@ class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerc
         val miViewHolder = holder as ViewHolder?
 
         val direccion: String = ecommerce.address!!.street.toString() + " , " + ecommerce.address!!.city + " , ("+ ecommerce.address!!.country+")"
-        val distancia: String
-        if (ecommerce.distance==null){
-            distancia="Distancia: 0 Km"
-        }
-        else{
-            distancia="Distancia: "+ ecommerce.distance.toString() + " Km"
-        }
-
+        val distancia: String = "Distancia: "+String.format("%.2f",(ecommerce.distance)?.div(1000)) + " Km"  //Convierto a KM con 2 decimales
 
         if (miViewHolder != null) {
             miViewHolder.tvNombre.text = ecommerce.name
