@@ -67,7 +67,7 @@
         android:id="@+id/tv_Dtelefono"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="156dp"
         android:text="@string/tv_Dtelefono"
         android:textAlignment="center"
@@ -99,7 +99,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.415"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imMaps"
         app:layout_constraintTop_toBottomOf="@+id/tv_Dtelefono"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/twitter" />
@@ -109,14 +109,13 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginTop="80dp"
-        android:layout_marginEnd="30dp"
         android:contentDescription="@string/im_instagram"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imFB"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toStartOf="@+id/imTwitter"
+        app:layout_constraintHorizontal_bias="0.853"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_Dtelefono"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.004"
         app:srcCompat="@drawable/instagram" />
 
     <ImageView
@@ -150,10 +149,10 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="92dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
+        android:contentDescription="@string/im_Dtelefono"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imEmail"
-        app:srcCompat="@drawable/telefono"
-        android:contentDescription="@string/im_Dtelefono" />
+        app:srcCompat="@drawable/telefono" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
