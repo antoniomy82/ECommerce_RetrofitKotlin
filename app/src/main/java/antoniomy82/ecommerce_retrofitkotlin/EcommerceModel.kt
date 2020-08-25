@@ -4,7 +4,7 @@ import android.location.Location
 
 
 class Ecommerce(
-    var slug: String? = null,
+    var shortDescription: String? = null,
     var name: String? = null,
     var category: String? = null,
     var latitude: Double? = null,
@@ -14,7 +14,7 @@ class Ecommerce(
     var social: MySocial? = null,
     var logo: MyLogo? = null,
     var myLocation: Location? = null,
-    var distance: Float?=null
+    var distance: Float? = null
 ){
     init {
         //Cargo el valor Location para calcular distancias

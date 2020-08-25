@@ -19,6 +19,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+@Suppress("NAME_SHADOWING")
 class MainActivity : AppCompatActivity() {
 
     lateinit var service: ApiService
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         fun getEcommerceList(): ArrayList<Ecommerce>? {
             return ecommerceList
         }
+
         fun getEcommerce(indice: Int): Ecommerce? {
             return ecommerceList?.get(indice)
         }
@@ -85,8 +87,7 @@ class MainActivity : AppCompatActivity() {
         btResult?.setOnClickListener {
             if(miUbicacion==null){
                 tvLoad?.visibility = View.VISIBLE
-            }
-            else {
+            } else {
                 val intent = Intent(applicationContext, Result::class.java)
                 startActivity(intent)
             }
@@ -123,9 +124,9 @@ class MainActivity : AppCompatActivity() {
                 var contador = 0
 
                 for (i:Int in 0 until lenght){
-                   if(myCategory==(comercios[i].category.toString())){
+                    if(myCategory==(comercios[i].category.toString())){
                         ecommerceList?.add(Ecommerce(
-                            comercios[i].slug,
+                            comercios[i].shortDescription,
                             comercios[i].name,
                             comercios[i].category,
                             comercios[i].latitude,
@@ -195,11 +196,19 @@ class MainActivity : AppCompatActivity() {
                 val latitude: Double = gps.getLatitude()
                 val longitude: Double = gps.getLongitude()
 
-                miUbicacion= getLocation(gps.getLatitude(),gps.getLongitude(),"miUbicacion") //Obtengo mi location
+                miUbicacion = getLocation(
+                    gps.getLatitude(),
+                    gps.getLongitude(),
+                    "miUbicacion"
+                ) //Obtengo mi location
                 sortByDistance()
 
                 // \n is for new line
-                Toast.makeText(applicationContext, "eComercios más próximos ¡calculados!", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    applicationContext,
+                    "eComercios más próximos ¡calculados!",
+                    Toast.LENGTH_SHORT
+                ).show()
                 address = gps.getLocationAddress(latitude, longitude)
                 edDireccion!!.setText(address)
 

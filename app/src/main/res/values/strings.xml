@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">eCommerces</string>
+    <string name="app_name">eCommerces   Antonio J Morales</string>
     <string name="tv_selectCategoria">Seleccione categoría :</string>
     <string name="tv_bienvenido">Bienvenido</string>
     <string name="bt_mostrar_resultados">Mostrar resultados</string>
@@ -12,7 +12,7 @@
     <string name="tvCategoria">SHOPPING</string>
     <string name="tv_Dnombre">Nombre_Detalle</string>
     <string name="tv_Ddireccion">Direccion Detalle</string>
-    <string name="tv_Dcategoria">Categoria Detalle</string>
+    <string name="tv_DshortDescription">Descripción corta de el eComercio</string>
     <string name="tv_Demail">Email detalle</string>
     <string name="tv_Dtelefono">Telefono Detalle</string>
     <string name="im_logo">Logo comercio</string>
@@ -23,6 +23,10 @@
     <string name="aviso_gps">"Pulse icono GPS y obtenga su dirección"</string>
     <string name="im_Demail">Enviar email</string>
     <string name="im_Dtelefono">Llamar por telefono</string>
+    <string name="ed_L_GPS">Pulse botón GPS (debajo) para obtener dirección</string>
+    <string name="tv_LabelDnombre">NOMBRE e-COMERCIO</string>
+    <string name="tv_LabelDdescShort">DESCRIPCIÓN</string>
+    <string name="tv_LabelDdireccion">DIRECCIÓN</string>
 
     <string-array name="Categories">
         <item>SHOPPING</item>

@@ -23,9 +23,8 @@
         android:layout_weight="1"
         android:text="@string/tvname"
         android:textAlignment="gravity"
-        android:textColor="@color/blue_grey_400"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textColor="@color/blue_300"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/tvDireccion"
@@ -49,7 +48,9 @@
             android:text="@string/tvDistancia"
             android:textAlignment="textStart"
             android:textAllCaps="false"
-            android:textSize="12sp" />
+            android:textColor="@color/blue_grey_600"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvCategoria"
@@ -57,8 +58,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/tvCategoria"
-            android:textAlignment="textEnd"
-            android:textSize="12sp" />
+            android:textAlignment="viewEnd"
+            android:textColor="@color/blue_grey_600"
+            android:textSize="12sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

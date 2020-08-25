@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.collections.ArrayList
 
 /**
  *  Creado por Antonio Javier Morales Yáñez on 23/08/2020
@@ -17,13 +16,11 @@ import kotlin.collections.ArrayList
 
 class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerce>?) : RecyclerView.Adapter<AdaptadorRecyclerView.ViewHolder>() {
 
-    var listaFull: ArrayList<Ecommerce>?=null
-    var listaCopia: ArrayList<Ecommerce>?=null
+    var listaComercios: ArrayList<Ecommerce>? = null
 
     //Constructor por parámetros
     init {
-        this.listaCopia=listaItems
-        listaFull = ArrayList<Ecommerce>(listaItems)
+        this.listaComercios = listaItems
     }
     
     //Aquí es dónde vamos a crear o inflar la vista
@@ -34,24 +31,34 @@ class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerc
 
         println("Create View Holder: $viewType")
 
-        //Barra de inicio
+
         return ViewHolder(miContentView) //Devolvemos el ViewHolder que hemos creado debajo, con la View que acabamos de inflar
     }
 
     //Asignamos los datos a cada elemento de la lista
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val ecommerce = listaCopia?.get(position) // Cargamos los elementos
+        val ecommerce = listaComercios?.get(position) // Cargamos los elementos
         val miViewHolder = holder as ViewHolder?
 
-        val direccion: String = ecommerce?.address?.street + " , " + ecommerce?.address?.city + " , ("+ ecommerce?.address?.country+")"
-        val distancia: String = "Distancia: "+String.format("%.2f",(ecommerce?.distance)?.div(1000)) + " Km"  //Convierto a KM con 2 decimales
-        val cateoria : String = "Categoria: "+ ecommerce?.category
+        val direccion: String =
+            ecommerce?.address?.street + " , " + ecommerce?.address?.city + " , (" + ecommerce?.address?.country + ")"
+        val distancia: String = "Distancia: " + String.format(
+            "%.2f",
+            (ecommerce?.distance)?.div(1000)
+        ) + " Km"  //Convierto a KM con 2 decimales
+        val cateoria: String? = ecommerce?.category
         if (miViewHolder != null) {
 
             miViewHolder.tvNombre.text = ecommerce?.name
-            if(!direccion.isNullOrBlank()){miViewHolder.tvDireccion.text = direccion}
-            if(!distancia.isNullOrBlank()){miViewHolder.tvDistancia.text = distancia}
-            if(!cateoria.isNullOrBlank()){miViewHolder.tvCategoria.text = cateoria}
+            if (!direccion.isBlank()) {
+                miViewHolder.tvDireccion.text = direccion
+            }
+            if (!distancia.isBlank()) {
+                miViewHolder.tvDistancia.text = distancia
+            }
+            if (!cateoria.isNullOrBlank()) {
+                miViewHolder.tvCategoria.text = cateoria
+            }
         }
 
         //Pongo las celdas pares de otro color
@@ -71,11 +78,11 @@ class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerc
             intent.putExtra("miIndice", position) //Envío la posición dentro de lista
             context.startActivity(intent)
         }
-      //  MainActivity.stopProgressBar()
+
     }
 
     override fun getItemCount(): Int {
-        return listaCopia!!.size
+        return listaComercios!!.size
     }
 
 
@@ -86,8 +93,6 @@ class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerc
         var tvDireccion : TextView = itemView.findViewById(R.id.tvDireccion)
         var tvDistancia : TextView = itemView.findViewById(R.id.tvDistancia)
         var tvCategoria : TextView = itemView.findViewById(R.id.tvCategoria)
-
     }
-
 
 }

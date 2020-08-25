@@ -21,45 +21,49 @@
         android:id="@+id/tv_Dnombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
+        android:lineSpacingExtra="12sp"
         android:text="@string/tv_Dnombre"
+        android:textAlignment="center"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imLogo" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_DLabel_NombreEmpres" />
 
     <TextView
-        android:id="@+id/tv_Dcategoria"
+        android:id="@+id/tv_DshortDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/tv_Dcategoria"
+        android:layout_marginTop="5dp"
+        android:text="@string/tv_DshortDescription"
+        android:textAlignment="center"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_Dnombre" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_LabelDshortDescription" />
 
     <TextView
         android:id="@+id/tv_Ddireccion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:text="@string/tv_Ddireccion"
         android:textAlignment="center"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_Dcategoria" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_LabelDireccion" />
 
     <TextView
         android:id="@+id/tv_Demail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:text="@string/tv_Demail"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.143"
+        app:layout_constraintHorizontal_bias="0.121"
         app:layout_constraintStart_toEndOf="@+id/imEmail"
         app:layout_constraintTop_toBottomOf="@+id/tv_Ddireccion" />
 
@@ -67,12 +71,12 @@
         android:id="@+id/tv_Dtelefono"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="156dp"
         android:text="@string/tv_Dtelefono"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.961"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/imTelefono"
         app:layout_constraintTop_toBottomOf="@+id/tv_Demail" />
 
@@ -137,8 +141,8 @@
         android:id="@+id/imEmail"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="24dp"
         android:contentDescription="@string/im_Demail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_Ddireccion"
@@ -148,11 +152,47 @@
         android:id="@+id/imTelefono"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="@string/im_Dtelefono"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imEmail"
         app:srcCompat="@drawable/telefono" />
+
+    <TextView
+        android:id="@+id/tv_DLabel_NombreEmpres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/tv_LabelDnombre"
+        android:textColor="@color/blue_300"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imLogo" />
+
+    <TextView
+        android:id="@+id/tv_LabelDshortDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/tv_LabelDdescShort"
+        android:textColor="@color/blue_300"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_Dnombre" />
+
+    <TextView
+        android:id="@+id/tv_LabelDireccion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/tv_LabelDdireccion"
+        android:textColor="@color/blue_300"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_DshortDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
