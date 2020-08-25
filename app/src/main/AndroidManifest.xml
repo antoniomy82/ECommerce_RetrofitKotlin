@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         android:allowBackup="true">
-        <activity android:name=".DetailActivity" android:parentActivityName=".Result"  />
+        <activity android:name=".DetailActivity" />
         <activity android:name=".Result" />
         <activity android:name=".MainActivity">
             <intent-filter>

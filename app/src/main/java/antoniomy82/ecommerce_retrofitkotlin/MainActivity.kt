@@ -19,7 +19,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-@Suppress("NAME_SHADOWING")
 class MainActivity : AppCompatActivity() {
 
     lateinit var service: ApiService
@@ -36,11 +35,11 @@ class MainActivity : AppCompatActivity() {
     companion object{
         private var ecommerceList:ArrayList<Ecommerce>?=null
 
-        fun getEcommerceList(): ArrayList<Ecommerce> {
-            return ecommerceList!!
+        fun getEcommerceList(): ArrayList<Ecommerce>? {
+            return ecommerceList
         }
-        fun getEcommerce(indice: Int): Ecommerce {
-            return ecommerceList!![indice]
+        fun getEcommerce(indice: Int): Ecommerce? {
+            return ecommerceList?.get(indice)
         }
     }
 
@@ -56,10 +55,8 @@ class MainActivity : AppCompatActivity() {
         imGPS=findViewById(R.id.imGPS)
 
 
-
         val sp_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
         spCateory.adapter = sp_adapter
-
 
 
         //Spinner Categoria
@@ -126,7 +123,7 @@ class MainActivity : AppCompatActivity() {
                 var contador = 0
 
                 for (i:Int in 0 until lenght){
-                   if(myCategory==(comercios.get(i).category.toString())){
+                   if(myCategory==(comercios[i].category.toString())){
                         ecommerceList?.add(Ecommerce(
                             comercios[i].slug,
                             comercios[i].name,

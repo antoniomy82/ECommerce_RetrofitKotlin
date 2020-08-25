@@ -1,7 +1,6 @@
 
 package antoniomy82.ecommerce_retrofitkotlin
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -9,8 +8,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.URLUtil
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.squareup.picasso.Picasso
+
 
 class DetailActivity : AppCompatActivity() {
 
@@ -21,7 +23,7 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
 
         //Definimos los enlaces con activity_detail
-        //var im_Dlogo : ImageView? =findViewById(R.id.imLogo)
+        var im_Dlogo : ImageView? =findViewById(R.id.imLogo)
         val tv_Dnombre: TextView? =findViewById(R.id.tv_Dnombre)
         val tv_Dcategoria: TextView? =findViewById(R.id.tv_Dcategoria)
         val tv_Ddireccion: TextView? =findViewById(R.id.tv_Ddireccion)
@@ -41,6 +43,14 @@ class DetailActivity : AppCompatActivity() {
         tv_Dtelefono!!.text=miEcommerce!!.contact!!.phone
 
 
+        if((miEcommerce?.logo?.url)!=null) {
+            Picasso.get().load(miEcommerce!!.logo!!.url).placeholder(R.drawable.nologo).into(im_Dlogo)
+            Log.d("Dentro Picasso", "Se pasa por el carajo isNotEmpty")
+        }
+        else{
+            Picasso.get().load(R.drawable.noimage).into(im_Dlogo)
+        }
+
         findViewById<View>(R.id.imMaps).setOnClickListener {
             if (miEcommerce?.myLocation != null) {
                 val intentUri = Uri.parse("geo:"+miEcommerce?.latitude+"?z=16&q="+miEcommerce?.longitude+"("+miEcommerce?.address?.street+","+miEcommerce?.address?.city+","+miEcommerce?.address?.country+")")
@@ -54,7 +64,7 @@ class DetailActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.imTwitter).setOnClickListener {
 
-            val miUri:String =miEcommerce!!.social!!.twitter
+            val miUri: String? = miEcommerce?.social?.twitter
             if(URLUtil.isValidUrl(miUri)){
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
             }
@@ -64,7 +74,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.imInstagram).setOnClickListener {
-            val miUri:String =miEcommerce!!.social!!.instagram
+            val miUri:String? =miEcommerce?.social?.instagram
             if(URLUtil.isValidUrl(miUri)){
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
             }
@@ -74,7 +84,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.imFB).setOnClickListener {
-            val miUri:String =miEcommerce!!.social!!.facebook
+            val miUri:String? =miEcommerce?.social?.facebook
             if(URLUtil.isValidUrl(miUri)){
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
             }
