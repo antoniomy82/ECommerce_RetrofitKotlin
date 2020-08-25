@@ -55,12 +55,12 @@
         android:id="@+id/tv_Demail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:text="@string/tv_Demail"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.143"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/imEmail"
         app:layout_constraintTop_toBottomOf="@+id/tv_Ddireccion" />
 
     <TextView
@@ -73,20 +73,21 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.961"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/imTelefono"
         app:layout_constraintTop_toBottomOf="@+id/tv_Demail" />
 
     <ImageView
         android:id="@+id/imMaps"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginStart="56dp"
         android:layout_marginTop="80dp"
         android:contentDescription="@string/im_google_maps"
-        app:layout_constraintEnd_toStartOf="@+id/imTwitter"
-        app:layout_constraintHorizontal_bias="0.354"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.21"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_Dtelefono"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/maps" />
 
     <ImageView
@@ -95,22 +96,27 @@
         android:layout_height="45dp"
         android:layout_marginTop="80dp"
         android:contentDescription="@string/im_twiter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.415"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_Dtelefono"
-        app:srcCompat="@drawable/twitter"
-        tools:layout_editor_absoluteX="142dp" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/twitter" />
 
     <ImageView
         android:id="@+id/imInstagram"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginStart="44dp"
         android:layout_marginTop="80dp"
-        android:layout_marginEnd="44dp"
+        android:layout_marginEnd="30dp"
         android:contentDescription="@string/im_instagram"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imFB"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toEndOf="@+id/imTwitter"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_Dtelefono"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/instagram" />
 
     <ImageView
@@ -118,33 +124,36 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginTop="80dp"
-        android:layout_marginEnd="84dp"
         android:baselineAlignBottom="false"
         android:contentDescription="@string/im_fb"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.806"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_Dtelefono"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/facebook" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imEmail"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="92dp"
-        android:layout_marginTop="305dp"
+        android:layout_marginTop="40dp"
+        android:contentDescription="@string/im_Demail"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/email"
-        android:contentDescription="TODO" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_Ddireccion"
+        app:srcCompat="@drawable/email" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imTelefono"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="92dp"
         android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/imEmail"
         app:srcCompat="@drawable/telefono"
-        android:contentDescription="TODO" />
+        android:contentDescription="@string/im_Dtelefono" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

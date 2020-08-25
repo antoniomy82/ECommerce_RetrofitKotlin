@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:fullBackupContent="true"
@@ -16,7 +17,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         android:allowBackup="true">
-        <activity android:name=".DetailActivity" />
+        <activity android:name=".DetailActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" /> <!-- intent filter para abrir correo -->
+
+                <data android:scheme="mailto" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Result" />
         <activity android:name=".MainActivity">
             <intent-filter>
