@@ -13,6 +13,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.picasso.Picasso
 
+/**
+ *  Creado por Antonio Javier Morales Yáñez on 25/08/2020
+ *  Github : https://github.com/antoniomy82
+ *  Likedin: https://www.linkedin.com/in/antonio-javiermorales-yáñez-85a96b137/
+ *  email: antoniomy82@gmail.com
+ */
 
 class DetailActivity : AppCompatActivity() {
 
@@ -29,8 +35,6 @@ class DetailActivity : AppCompatActivity() {
         val tv_Ddireccion: TextView? = findViewById(R.id.tv_Ddireccion)
         val tv_Demail: TextView? = findViewById(R.id.tv_Demail)
         val tv_Dtelefono: TextView? = findViewById(R.id.tv_Dtelefono)
-        //val im_maps: ImageView? =findViewById(R.id.imMaps)
-
 
         miEcommerce = MainActivity.getEcommerce(intent.getIntExtra("miIndice", 0))
         val direccion: String =
@@ -57,16 +61,16 @@ class DetailActivity : AppCompatActivity() {
         findViewById<View>(R.id.imEmail).setOnClickListener {
             val miEmail =
                 arrayOf<String>(miEcommerce!!.contact!!.email) //Tengo que hacer este cast raro si o si, sino no me aparece email
-             val intent = Intent(Intent.ACTION_SENDTO).apply {
-                 data = Uri.parse("mailto:") // only email apps should handle this
-                 putExtra(Intent.EXTRA_EMAIL, miEmail)
-                 putExtra(Intent.EXTRA_SUBJECT, " Soy Antonio J Morales -->Contráteme Xdd ")
-             }
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:") // only email apps should handle this
+                putExtra(Intent.EXTRA_EMAIL, miEmail)
+                putExtra(Intent.EXTRA_SUBJECT, " Soy Antonio J Morales -->Contráteme Xdd ")
+            }
 
-             if (intent.resolveActivity(packageManager) != null) {
-                   startActivity(intent)
-             }
-         }
+            if (intent.resolveActivity(packageManager) != null) {
+                startActivity(intent)
+            }
+        }
 
         //Cuando hagamos click sobre el icono del telefono, llamaremos
         findViewById<View>(R.id.imTelefono).setOnClickListener {
@@ -96,31 +100,40 @@ class DetailActivity : AppCompatActivity() {
         findViewById<View>(R.id.imTwitter).setOnClickListener {
 
             val miUri: String? = miEcommerce?.social?.twitter
-            if(URLUtil.isValidUrl(miUri)){
+            if (URLUtil.isValidUrl(miUri)) {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
-            }
-            else{
-                Toast.makeText(applicationContext, "No hay Twitter o enlace erroneo", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "No hay Twitter o enlace erroneo",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
         findViewById<View>(R.id.imInstagram).setOnClickListener {
             val miUri:String? =miEcommerce?.social?.instagram
-            if(URLUtil.isValidUrl(miUri)){
+            if (URLUtil.isValidUrl(miUri)) {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
-            }
-            else{
-                Toast.makeText(applicationContext, "No hay Instagram o enlace erroneo", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "No hay Instagram o enlace erroneo",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
         findViewById<View>(R.id.imFB).setOnClickListener {
             val miUri:String? =miEcommerce?.social?.facebook
-            if(URLUtil.isValidUrl(miUri)){
+            if (URLUtil.isValidUrl(miUri)) {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
-            }
-            else{
-                Toast.makeText(applicationContext, "No hay Facebook o enlace erroneo", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "No hay Facebook o enlace erroneo",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 

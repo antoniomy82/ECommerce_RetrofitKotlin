@@ -17,7 +17,7 @@ import java.io.IOException
 import java.util.*
 
 /**
- *  Created by Antonio J Morales "el colega informático" on 12/4/17.
+ *  Created by Antonio J Morales on 12/4/17.
  *  Si te interesa, puedes ver como se ha realizado esta App en mi Canal de Youtube: https://www.youtube.com/channel/UC2XTU132H9tHCnM_A3opCzQ
  *  Puedes descargar el código de mi Github : https://github.com/antoniomy82
 */
@@ -37,7 +37,7 @@ open class GPSTracker : Service {
 
     val address = false //Geodecoder obtain an Address.
 
-    constructor() {}
+    constructor()
     constructor(context: Context?, activity: Activity?) {
         mContext = context
         this.activity = activity
@@ -109,10 +109,8 @@ open class GPSTracker : Service {
 
     private val mLocationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            if (location != null) {
                 latitude = location.latitude
                 longitude = location.longitude
-            }
         }
 
         override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
@@ -160,7 +158,7 @@ open class GPSTracker : Service {
             val geocoder = Geocoder(mContext, Locale.getDefault())
             // Get the current location from the input parameter list
             // Create a list to contain the result address
-            var addresses: List<Address>? = null
+            val addresses: List<Address>?
 
             addresses = try {
                     geocoder.getFromLocation(mlatitude, mlongitude, 1) // Devuelve una dirección

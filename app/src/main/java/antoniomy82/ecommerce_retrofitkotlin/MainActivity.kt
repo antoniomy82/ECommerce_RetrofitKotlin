@@ -19,22 +19,29 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ *  Creado por Antonio Javier Morales Yáñez on 23/08/2020
+ *  Github : https://github.com/antoniomy82
+ *  Likedin: https://www.linkedin.com/in/antonio-javiermorales-yáñez-85a96b137/
+ *  email: antoniomy82@gmail.com
+ */
+
 @Suppress("NAME_SHADOWING")
 class MainActivity : AppCompatActivity() {
 
     lateinit var service: ApiService
     private val URL = "http://prod.klikin.com/commerces/public/"
 
-    var myCategory:String?=null
-    private var tvLoad:TextView? =null
-    private var btResult:Button? = null
+    var myCategory: String? = null
+    private var tvLoad: TextView? = null
+    private var btResult: Button? = null
     private var edDireccion: EditText? = null
-    private var miUbicacion:Location?=null
-    private var imGPS:ImageView?=null
+    private var miUbicacion: Location? = null
+    private var imGPS: ImageView? = null
 
 
-    companion object{
-        private var ecommerceList:ArrayList<Ecommerce>?=null
+    companion object {
+        private var ecommerceList: ArrayList<Ecommerce>? = null
 
         fun getEcommerceList(): ArrayList<Ecommerce>? {
             return ecommerceList
@@ -88,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             if(miUbicacion==null){
                 tvLoad?.visibility = View.VISIBLE
             } else {
-                val intent = Intent(applicationContext, Result::class.java)
+                val intent = Intent(applicationContext, ResultActivity::class.java)
                 startActivity(intent)
             }
         }

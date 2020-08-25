@@ -10,8 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- *  Creado por Antonio Javier Morales Yáñez on 23/08/2020
- *  Puedes descargar el código de mi Github : https://github.com/antoniomy82
+ *  Creado por Antonio Javier Morales Yáñez on 24/08/2020
+ *  Github : https://github.com/antoniomy82
+ *  Likedin: https://www.linkedin.com/in/antonio-javiermorales-yáñez-85a96b137/
+ *  email: antoniomy82@gmail.com
  */
 
 class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerce>?) : RecyclerView.Adapter<AdaptadorRecyclerView.ViewHolder>() {
