@@ -54,7 +54,7 @@ Esta App ha sido realizada en MVC por simplicidad y tiempo.
 ## STORYBOARD
 En los siguientes screenshots, se puede ver paso a paso el funcionamiento de la app:  
 ***
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_00.png">&nbsp; &nbsp; &nbsp; &nbsp;<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_01.png">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_00.png">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_01.png">
 
 
 
