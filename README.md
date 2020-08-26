@@ -43,7 +43,7 @@ Una vez se obtengan los resultados, cuando "cliquemos" en un registro de la list
 
 # Arquitectura y organización
 
-Esta App ha sido realizada en MVC por simplicidad
+Esta App ha sido realizada en MVC por simplicidad y tiempo.
 
 Diagrama MVC en el proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/mvc.png">
@@ -52,7 +52,7 @@ Organización o estructura del proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/organizacion.PNG">
 
 # STORYBOARD
-
+En los siguientes screenshots, se puede ver paso a paso el funcionamiento de la app:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_00.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_01.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_02.png">
