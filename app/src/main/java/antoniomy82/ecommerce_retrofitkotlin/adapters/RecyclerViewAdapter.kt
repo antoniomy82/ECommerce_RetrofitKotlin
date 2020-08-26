@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin
+package antoniomy82.ecommerce_retrofitkotlin.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import antoniomy82.ecommerce_retrofitkotlin.R
+import antoniomy82.ecommerce_retrofitkotlin.activities.DetailActivity
+import antoniomy82.ecommerce_retrofitkotlin.models.Ecommerce
 
 /**
  *  Creado por Antonio Javier Morales Yáñez on 24/08/2020
@@ -16,20 +19,20 @@ import androidx.recyclerview.widget.RecyclerView
  *  email: antoniomy82@gmail.com
  */
 
-class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerce>?) : RecyclerView.Adapter<AdaptadorRecyclerView.ViewHolder>() {
+class RecyclerViewAdapter(var context: Context, listaItems: ArrayList<Ecommerce>?) :
+    RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
     var listaComercios: ArrayList<Ecommerce>? = null
 
-    //Constructor por parámetros
     init {
         this.listaComercios = listaItems
     }
-    
+
     //Aquí es dónde vamos a crear o inflar la vista
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val miContentView: View =
-            LayoutInflater.from(context).inflate(R.layout.recyclerview_item_lista, parent, false) //Aquí cambiamos el tipo de vista item_grid o Item_lista
+            LayoutInflater.from(context).inflate(R.layout.recyclerview_item_lista, parent, false)
 
         println("Create View Holder: $viewType")
 
@@ -49,9 +52,10 @@ class AdaptadorRecyclerView(var context: Context, listaItems: ArrayList<Ecommerc
             (ecommerce?.distance)?.div(1000)
         ) + " Km"  //Convierto a KM con 2 decimales
         val cateoria: String? = ecommerce?.category
-        if (miViewHolder != null) {
 
+        if (miViewHolder != null) {
             miViewHolder.tvNombre.text = ecommerce?.name
+
             if (!direccion.isBlank()) {
                 miViewHolder.tvDireccion.text = direccion
             }

@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin
+package antoniomy82.ecommerce_retrofitkotlin.utils
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -18,7 +18,7 @@ import java.util.*
 
 /**
  *  Created by Antonio J Morales on 12/4/17.
- *  Si te interesa, puedes ver como se ha realizado esta App en mi Canal de Youtube: https://www.youtube.com/channel/UC2XTU132H9tHCnM_A3opCzQ
+ *  Adaptada a Kotlin 15/04/2020
  *  Puedes descargar el código de mi Github : https://github.com/antoniomy82
 */
 open class GPSTracker : Service {
@@ -67,11 +67,17 @@ open class GPSTracker : Service {
             if (isGPSEnabled && isNetworkEnabled) {
                 canGetLocation = true
                 if (isNetworkEnabled) {
-                    locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), mLocationListener)
+                    locationManager!!.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+                        mLocationListener
+                    )
                     Log.d("Network", "Network")
 
                     if (locationManager != null) {
-                        location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                        location =
+                            locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                         if (location != null) {
                             latitude = location!!.latitude
                             longitude = location!!.longitude
@@ -88,11 +94,17 @@ open class GPSTracker : Service {
 
                             ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 50)
                     } else {
-                        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(), mLocationListener)
+                        locationManager!!.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
+                            mLocationListener
+                        )
                         Log.d("GPS Enabled", "GPS Enabled")
 
                         if (locationManager != null) {
-                            location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                            location =
+                                locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
                             if (location != null) {
                                 latitude = location!!.latitude

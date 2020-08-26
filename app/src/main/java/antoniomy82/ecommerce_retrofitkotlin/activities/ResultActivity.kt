@@ -1,9 +1,11 @@
-package antoniomy82.ecommerce_retrofitkotlin
+package antoniomy82.ecommerce_retrofitkotlin.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import antoniomy82.ecommerce_retrofitkotlin.R
+import antoniomy82.ecommerce_retrofitkotlin.adapters.RecyclerViewAdapter
 
 /**
  *  Creado por Antonio Javier Morales Yáñez on 25/08/2020
@@ -15,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 class ResultActivity : AppCompatActivity() {
 
     private var recyclerView: RecyclerView? = null
-    private var adapter: AdaptadorRecyclerView? = null
+    private var adapter: RecyclerViewAdapter? = null
     private var manager: RecyclerView.LayoutManager? = null
 
 
@@ -23,16 +25,14 @@ class ResultActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
 
-        //Cargo todos los parámetros de recyclerView en mi AdaptadorRecyclerView
+        //Cargo todos los parámetros de recyclerView en mi RecyclerViewAdapter
         manager = LinearLayoutManager(this) //Mostrar como LinearLayout
 
         recyclerView =
             findViewById(R.id.rvCategory) //Aquí definimos dónde tenemos la vista del recyclerView XML
         recyclerView?.layoutManager = manager
-        adapter = AdaptadorRecyclerView(
-            this,
-            MainActivity.getEcommerceList()
-        ) //lista linearLayout o grid para grid Layout
+
+        adapter = RecyclerViewAdapter(this, MainActivity.getEcommerceList())
         recyclerView?.adapter = adapter
     }
 }

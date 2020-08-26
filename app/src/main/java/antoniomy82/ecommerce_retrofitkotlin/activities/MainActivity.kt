@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin
+package antoniomy82.ecommerce_retrofitkotlin.activities
 
 import android.Manifest
 import android.app.AlertDialog
@@ -13,11 +13,17 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import antoniomy82.ecommerce_retrofitkotlin.R
+import antoniomy82.ecommerce_retrofitkotlin.interfaces.ApiService
+import antoniomy82.ecommerce_retrofitkotlin.models.Ecommerce
+import antoniomy82.ecommerce_retrofitkotlin.utils.GPSTracker
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+@Suppress("NAME_SHADOWING")
 
 /**
  *  Creado por Antonio Javier Morales Yáñez on 23/08/2020
@@ -26,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  *  email: antoniomy82@gmail.com
  */
 
-@Suppress("NAME_SHADOWING")
+//Clase que funciona como controlador del proyecto
 class MainActivity : AppCompatActivity() {
 
     lateinit var service: ApiService
@@ -75,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                 tvLoad?.visibility = View.VISIBLE
                 btResult?.visibility= View.INVISIBLE
                 //Inicalizo valores
-                ecommerceList=null
+                ecommerceList = null
                 edDireccion?.setText(R.string.aviso_gps)
                 miUbicacion=null
                 imGPS?.visibility=View.INVISIBLE
@@ -91,25 +97,27 @@ class MainActivity : AppCompatActivity() {
         tvLoad?.visibility = View.VISIBLE
 
 
+        //Botón que optiene la dirección mediante GPS de nuestro Smartphone
+        findViewById<View>(R.id.imGPS).setOnClickListener {
+            gps()
+            if (miUbicacion != null) {
+                tvLoad?.visibility = View.INVISIBLE
+                btResult?.visibility = View.VISIBLE
+            }
+        }
+
+        //Botón que muestra una lista de todos los eComercios, filtrados por categoría y distancia al Smartphone
         btResult?.setOnClickListener {
-            if(miUbicacion==null){
+            if (miUbicacion == null) {
                 tvLoad?.visibility = View.VISIBLE
             } else {
                 val intent = Intent(applicationContext, ResultActivity::class.java)
                 startActivity(intent)
             }
         }
-
-        //Cuando obtenemos la dirección GPS
-        findViewById<View>(R.id.imGPS).setOnClickListener { gps()
-            if (miUbicacion!=null) {
-                tvLoad?.visibility = View.INVISIBLE
-                btResult?.visibility = View.VISIBLE
-            }
-        }
     }
 
-
+    //Función que recibe todos los datos y almacena todos los datos cuya categoría coincida
     fun getAll() {
 
         //Recibimos todos los ECommerce
@@ -119,37 +127,48 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         //Creamos el servicio para hacer las llamadas
-        service = retrofit.create<ApiService>(ApiService::class.java)
+        service = retrofit.create<ApiService>(
+            ApiService::class.java
+        )
 
-        ecommerceList=ArrayList<Ecommerce>() //Inicializo
+        ecommerceList = ArrayList<Ecommerce>() //Inicializo
 
         service.getAllPosts().enqueue(object : Callback<List<Ecommerce>> {
-            override fun onResponse(call: Call<List<Ecommerce>>?, response: Response<List<Ecommerce>>?) {
+            override fun onResponse(
+                call: Call<List<Ecommerce>>?,
+                response: Response<List<Ecommerce>>?
+            ) {
 
                 val comercios = response?.body()
                 val lenght: Int = comercios!!.size
                 var contador = 0
 
-                for (i:Int in 0 until lenght){
-                    if(myCategory==(comercios[i].category.toString())){
-                        ecommerceList?.add(Ecommerce(
-                            comercios[i].shortDescription,
-                            comercios[i].name,
-                            comercios[i].category,
-                            comercios[i].latitude,
-                            comercios[i].longitude,
-                            comercios[i].address,
-                            comercios[i].contact,
-                            comercios[i].social,
-                            comercios[i].logo
-                        ))
+                for (i: Int in 0 until lenght) {
+                    if (myCategory == (comercios[i].category.toString())) {
+                        ecommerceList?.add(
+                            Ecommerce(
+                                comercios[i].shortDescription,
+                                comercios[i].name,
+                                comercios[i].category,
+                                comercios[i].latitude,
+                                comercios[i].longitude,
+                                comercios[i].address,
+                                comercios[i].contact,
+                                comercios[i].social,
+                                comercios[i].logo
+                            )
+                        )
                         contador++
                     }
                 }
-                tvLoad?.visibility= View.INVISIBLE
-                btResult?.visibility= View.INVISIBLE
-                imGPS?.visibility=View.VISIBLE
-                Toast.makeText(this@MainActivity, "$myCategory : $contador  coincidencias ", Toast.LENGTH_LONG).show()
+                tvLoad?.visibility = View.INVISIBLE
+                btResult?.visibility = View.INVISIBLE
+                imGPS?.visibility = View.VISIBLE
+                Toast.makeText(
+                    this@MainActivity,
+                    "$myCategory : $contador  coincidencias ",
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
             override fun onFailure(call: Call<List<Ecommerce>>?, t: Throwable?) {
@@ -158,6 +177,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    //Función usada para obtener Location (usado para distancia), en cada registro de la lista de eComercios por categoria
     private fun getLocation (latitude:Double, longitude:Double, name:String): Location {
         val myLocation = Location(name)
         myLocation.latitude = latitude
@@ -168,38 +188,47 @@ class MainActivity : AppCompatActivity() {
 
     //Relleno las distancias respecto a la ubicación actual y ordeno la lista de ecomercios
     private fun sortByDistance() {
-        ecommerceList= getEcommerceList()
+        ecommerceList = getEcommerceList()
         val lenght: Int = ecommerceList!!.size
-        var contador = 0
 
-        //Relleno las distancias entre el Smartphone y la ubicación del comercio.
+        //Calculo la distancia entre el smartphone y los eComercios, y las introduzco en su variable distance
         for (i: Int in 0 until lenght) {
-            if((miUbicacion!=null)&&(ecommerceList!!.get(i).myLocation!=null)){
-                ecommerceList!!.get(i).distance=(miUbicacion!!.distanceTo(ecommerceList!!.get(i).myLocation))
-                contador++
+            if ((miUbicacion != null) && (ecommerceList!!.get(i).myLocation != null)) {
+                ecommerceList!!.get(i).distance =
+                    (miUbicacion!!.distanceTo(ecommerceList!!.get(i).myLocation))
             }
         }
 
-        //Ordeno el ArrayList
+        //Ordeno el ArrayList por distance
         ecommerceList!!.sortBy { it.distance }
     }
 
 
-    /**
-     * Dialog to Enable GPS
-     */
+    //Dialog para habilitar GPS
     private fun gps() {
         val address: String //Use to paint GeoLocation in edText or Toast
-        val gps = GPSTracker(applicationContext, this)
+        val gps = GPSTracker(
+            applicationContext,
+            this
+        )
 
-        //Check GPS Permissions
-        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                applicationContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        //Chequeo si tenemos los permisos de GPS
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                applicationContext, Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
 
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
 
         } else { //Tengo permisos
-            if (gps.canGetLocation()) { //I have GPS enable
+            if (gps.canGetLocation()) { //Tengo GPS activo
                 val latitude: Double = gps.getLatitude()
                 val longitude: Double = gps.getLongitude()
 
@@ -208,23 +237,24 @@ class MainActivity : AppCompatActivity() {
                     gps.getLongitude(),
                     "miUbicacion"
                 ) //Obtengo mi location
-                sortByDistance()
 
-                // \n is for new line
+                sortByDistance() //Ordeno la lista de eComercios por categoria respecto a mi posición
+
                 Toast.makeText(
                     applicationContext,
                     "eComercios más próximos ¡calculados!",
                     Toast.LENGTH_SHORT
                 ).show()
+
                 address = gps.getLocationAddress(latitude, longitude)
                 edDireccion!!.setText(address)
 
             } else { dialogNoGPS() }//GPS deshabilitado o no tengo GPS
         }
-    } //onClick
+    }
 
 
-    //GPS desactivado
+    //Dialog GPS desactivado
     private fun dialogNoGPS() {
         val dialog = AlertDialog.Builder(this)
         dialog.setCancelable(false)
@@ -234,13 +264,12 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             this.startActivity(intent)
         }
-            .setNegativeButton("Cancelar ") { dialog, which -> //Action for "Cancel".
+            .setNegativeButton("Cancelar ") { dialog, which ->
                 dialog.cancel()
             }
         val alert = dialog.create()
         alert.show()
     }
-
 
 }
 

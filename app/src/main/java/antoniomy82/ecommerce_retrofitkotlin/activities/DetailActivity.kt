@@ -1,16 +1,17 @@
 
-package antoniomy82.ecommerce_retrofitkotlin
+package antoniomy82.ecommerce_retrofitkotlin.activities
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import antoniomy82.ecommerce_retrofitkotlin.R
+import antoniomy82.ecommerce_retrofitkotlin.models.Ecommerce
 import com.squareup.picasso.Picasso
 
 /**
@@ -29,35 +30,43 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
 
         //Definimos los enlaces con activity_detail
-        val im_Dlogo: ImageView? = findViewById(R.id.imLogo)
-        val tv_Dnombre: TextView? = findViewById(R.id.tv_Dnombre)
-        val tv_DshortDescription: TextView? = findViewById(R.id.tv_DshortDescription)
-        val tv_Ddireccion: TextView? = findViewById(R.id.tv_Ddireccion)
-        val tv_Demail: TextView? = findViewById(R.id.tv_Demail)
-        val tv_Dtelefono: TextView? = findViewById(R.id.tv_Dtelefono)
+        val imDlogo: ImageView? = findViewById(R.id.imLogo)
+        val tvDnombre: TextView? = findViewById(R.id.tv_Dnombre)
+        val tvDshortdescription: TextView? = findViewById(R.id.tv_DshortDescription)
+        val tvDdireccion: TextView? = findViewById(R.id.tv_Ddireccion)
+        val tvDemail: TextView? = findViewById(R.id.tv_Demail)
+        val tvDtelefono: TextView? = findViewById(R.id.tv_Dtelefono)
 
-        miEcommerce = MainActivity.getEcommerce(intent.getIntExtra("miIndice", 0))
+        this.miEcommerce = MainActivity.getEcommerce(intent.getIntExtra("miIndice", 0))
         val direccion: String =
             miEcommerce!!.address!!.street + ", " + miEcommerce!!.address!!.zip + " , " + miEcommerce!!.address!!.city + "," + miEcommerce!!.address!!.country
 
-        tv_Dnombre!!.text = miEcommerce!!.name
-        tv_DshortDescription!!.text = miEcommerce!!.shortDescription
-        tv_Ddireccion!!.text = direccion
-        tv_Demail!!.text = miEcommerce!!.contact!!.email
-        tv_Dtelefono!!.text = miEcommerce!!.contact!!.phone
+        tvDnombre!!.text = miEcommerce!!.name
+        tvDshortdescription!!.text = miEcommerce!!.shortDescription
+        tvDdireccion!!.text = direccion
+        tvDemail!!.text = miEcommerce!!.contact!!.email
+        tvDtelefono!!.text = miEcommerce!!.contact!!.phone
 
         //Cargo el logo almacenado con Picasso
         if ((miEcommerce?.logo?.url) != null) {
             Picasso.get().load(miEcommerce!!.logo!!.url).placeholder(R.drawable.nologo)
-                .into(im_Dlogo)
-            Log.d("Dentro Picasso", "Se pasa por el carajo isNotEmpty")
+                .into(imDlogo)
+
         } else {
-            Picasso.get().load(R.drawable.noimage).into(im_Dlogo)
+            Picasso.get().load(R.drawable.noimage).into(imDlogo)
         }
 
+        onClickListeners() //Cargo todos los onClickListeners
 
-        //Cuando se haga click la imagen de mail, abrirá un cliente de correo  con la dirección que tenemos guardada
-        // Nota: (declarar intent filter en Manifest), si no tenemos dirección de mail, la dejará en blanco.
+    }
+
+
+    //Funcion que contiene todos los setOnClickListener de este activity
+
+    fun onClickListeners() {
+
+        //Cuando se haga click el icono de email, abrirá un cliente de correo  con la dirección que tenemos guardada
+        // Nota: si no existe dirección de mail, la dejará en blanco.
         findViewById<View>(R.id.imEmail).setOnClickListener {
             val miEmail =
                 arrayOf<String>(miEcommerce!!.contact!!.email) //Tengo que hacer este cast raro si o si, sino no me aparece email
@@ -72,9 +81,10 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-        //Cuando hagamos click sobre el icono del telefono, llamaremos
+        //Cuando se haga click sobre el icono del telefono, lanzará las llamadas (DIAL).
+        // Nota: El teléfono puede no corresponder a un abonado o ser erroneo
         findViewById<View>(R.id.imTelefono).setOnClickListener {
-            if (miEcommerce?.contact?.phone !="" || miEcommerce?.contact?.phone !=null) {
+            if (miEcommerce?.contact?.phone != "" || miEcommerce?.contact?.phone != null) {
                 val intent = Intent(Intent.ACTION_DIAL)
                 intent.data = Uri.parse("tel:" + miEcommerce?.contact?.phone)
 
@@ -82,23 +92,34 @@ class DetailActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             } else {
-                Toast.makeText(applicationContext, "No hay teléfono en ese campo o su formato es erroneo", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    applicationContext,
+                    "No hay teléfono en ese campo",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
+        //Cuando se haga click sobre icono maps, abrirá google maps y mostrará la ubicación del eComercio.
+        //Nota: Si la dirección está mal introducida, busca la ubicación más coincidente.
         findViewById<View>(R.id.imMaps).setOnClickListener {
             if (miEcommerce?.myLocation != null) {
-                val intentUri = Uri.parse("geo:"+miEcommerce?.latitude+"?z=16&q="+miEcommerce?.longitude+"("+miEcommerce?.address?.street+","+miEcommerce?.address?.city+","+miEcommerce?.address?.country+")")
+                val intentUri =
+                    Uri.parse("geo:" + miEcommerce?.latitude + "?z=16&q=" + miEcommerce?.longitude + "(" + miEcommerce?.address?.street + "," + miEcommerce?.address?.city + "," + miEcommerce?.address?.country + ")")
                 val intent = Intent(Intent.ACTION_VIEW, intentUri)
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "No hay dirección o esta en formato incorrecto", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "No hay dirección o esta en formato incorrecto",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
-
+        //Cuando se haga click sobre el icono twitter, abrirá la cuenta web de twitter
+        //Nota: La cuenta de twitter puede estar mal introducida o no existir.
         findViewById<View>(R.id.imTwitter).setOnClickListener {
-
             val miUri: String? = miEcommerce?.social?.twitter
             if (URLUtil.isValidUrl(miUri)) {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
@@ -111,8 +132,10 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
+        //Cuando se haga click sobre el icono instagram, abrirá la cuenta web de instagram
+        //Nota: La cuenta de instagram puede estar mal introducida o no existir.
         findViewById<View>(R.id.imInstagram).setOnClickListener {
-            val miUri:String? =miEcommerce?.social?.instagram
+            val miUri: String? = miEcommerce?.social?.instagram
             if (URLUtil.isValidUrl(miUri)) {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
             } else {
@@ -124,8 +147,10 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
+        //Cuando se haga click sobre el icono facebook, abrirá la cuenta web de facebook
+        //Nota: La cuenta de facebook puede estar mal introducida o no existir.
         findViewById<View>(R.id.imFB).setOnClickListener {
-            val miUri:String? =miEcommerce?.social?.facebook
+            val miUri: String? = miEcommerce?.social?.facebook
             if (URLUtil.isValidUrl(miUri)) {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
             } else {
@@ -136,7 +161,6 @@ class DetailActivity : AppCompatActivity() {
                 ).show()
             }
         }
-
     }
 
 }

@@ -1,5 +1,6 @@
-package antoniomy82.ecommerce_retrofitkotlin
+package antoniomy82.ecommerce_retrofitkotlin.interfaces
 
+import antoniomy82.ecommerce_retrofitkotlin.models.Ecommerce
 import retrofit2.Call
 import retrofit2.http.GET
 

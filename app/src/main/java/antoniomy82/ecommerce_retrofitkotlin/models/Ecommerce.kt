@@ -1,15 +1,15 @@
-package antoniomy82.ecommerce_retrofitkotlin
+package antoniomy82.ecommerce_retrofitkotlin.models
 
 import android.location.Location
 
 /**
- *  Creado por Antonio Javier Morales Yáñez on 24/08/2020
+ *  Creado por Antonio Javier Morales Yáñez on 23/08/2020
  *  Github : https://github.com/antoniomy82
  *  Likedin: https://www.linkedin.com/in/antonio-javiermorales-yáñez-85a96b137/
  *  email: antoniomy82@gmail.com
  */
 
-class Ecommerce(
+data class Ecommerce(
     var shortDescription: String? = null,
     var name: String? = null,
     var category: String? = null,
@@ -33,7 +33,7 @@ class Ecommerce(
 }
 
 
-//Clases adicionales
+//Clases adicionales para hacer la correspondencia con el parseo
 class MyAddress(val street: String, val country: String, val city: String, val zip: String)
 
 class MyContact(val email: String, val phone: String)

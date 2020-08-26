@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="antoniomy82.ecommerce_retrofitkotlin.DetailActivity">
+    tools:context="antoniomy82.ecommerce_retrofitkotlin.activities.DetailActivity">
 
     <ImageView
         android:id="@+id/imLogo"
