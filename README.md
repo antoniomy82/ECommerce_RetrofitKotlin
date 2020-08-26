@@ -47,7 +47,6 @@ Esta App ha sido realizada en MVC por simplicidad y tiempo.
 
 Diagrama MVC en el proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/mvc.png">
-
 Organización o estructura del proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/organizacion.PNG">
 
@@ -56,19 +55,15 @@ En los siguientes screenshots, se puede ver paso a paso el funcionamiento de la 
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_00.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_01.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_02.png"> 
-
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_03.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_04.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_05.png">
-
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_06.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_07.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_08.png">
-
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_09.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_10.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_11.png">
-
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_12.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_13.png">
 
