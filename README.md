@@ -47,7 +47,7 @@ Esta App ha sido realizada en MVC por simplicidad y tiempo.
 
 - Diagrama MVC en el proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/mvc.png">
-***
+
 - Organización o estructura del proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/organizacion.PNG">
 
