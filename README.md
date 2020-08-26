@@ -61,7 +61,7 @@ En los siguientes screenshots, se puede ver paso a paso el funcionamiento de la 
 
 
 ***
-@@@@@@<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_02.png">      <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_03.png">
+__________<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_02.png">__________<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_03.png">
 
 
 
