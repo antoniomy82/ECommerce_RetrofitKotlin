@@ -54,11 +54,9 @@ Esta App ha sido realizada en MVC por simplicidad y tiempo.
 ## STORYBOARD
 En los siguientes screenshots, se puede ver paso a paso el funcionamiento de la app:  
 ***
-<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_00.png"><img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_01.png"><img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_02.png">
-***
-<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_03.png">
-<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_04.png">
-<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_05.png">
+<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_00.png">"   "<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_01.png">
+<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_02.png">"   "<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_03.png">
+<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_04.png">"    "<img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_05.png">
 ***
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_06.png">
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/Screenshot_07.png">
