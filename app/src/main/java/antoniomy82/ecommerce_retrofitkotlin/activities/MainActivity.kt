@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import antoniomy82.ecommerce_retrofitkotlin.R
@@ -36,7 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainActivity : AppCompatActivity() {
 
     lateinit var service: ApiService
-    private val URL = "http://prod.klikin.com/commerces/public/"
+    private val BASE_URL = "http://prod.klikin.com/commerces/public/"
 
     var myCategory: String? = null
     private var tvLoad: TextView? = null
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private var edDireccion: EditText? = null
     private var miUbicacion: Location? = null
     private var imGPS: ImageView? = null
+    private var progressBar: ProgressBar? = null
 
 
     companion object {
@@ -62,12 +64,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val spCateory:Spinner=findViewById(R.id.sp_category) //Acceso al spiner
-        val categorias=resources.getStringArray(R.array.Categories) //Acceso a lista de items
-        btResult=findViewById(R.id.bt_resultado)
-        tvLoad=findViewById(R.id.tvLoad)
+        val toolbar: Toolbar = findViewById(R.id.toolbar_main)
+        toolbar.title = "  eCommerce"
+        toolbar.setLogo(R.drawable.ico_personal)
+        setSupportActionBar(toolbar)
+
+        val spCateory: Spinner = findViewById(R.id.sp_category) //Acceso al spiner
+        val categorias = resources.getStringArray(R.array.Categories) //Acceso a lista de items
+        btResult = findViewById(R.id.bt_resultado)
+        tvLoad = findViewById(R.id.tvLoad)
         edDireccion = findViewById(R.id.edDireccion)
-        imGPS=findViewById(R.id.imGPS)
+        imGPS = findViewById(R.id.imGPS)
+        progressBar = findViewById(R.id.progressBar)
 
 
         val sp_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
@@ -77,16 +85,22 @@ class MainActivity : AppCompatActivity() {
         //Spinner Categoria
         spCateory.onItemSelectedListener = object : OnItemSelectedListener {
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 tvLoad?.visibility = View.VISIBLE
-                btResult?.visibility= View.INVISIBLE
+                progressBar?.visibility = View.VISIBLE
+                btResult?.visibility = View.INVISIBLE
                 //Inicalizo valores
                 ecommerceList = null
                 edDireccion?.setText(R.string.aviso_gps)
-                miUbicacion=null
-                imGPS?.visibility=View.INVISIBLE
+                miUbicacion = null
+                imGPS?.visibility = View.INVISIBLE
 
-                myCategory=categorias[position]
+                myCategory = categorias[position]
 
                 getAll() //Realizo el parseo
             }
@@ -122,7 +136,7 @@ class MainActivity : AppCompatActivity() {
 
         //Recibimos todos los ECommerce
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(URL)
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -164,6 +178,7 @@ class MainActivity : AppCompatActivity() {
                 tvLoad?.visibility = View.INVISIBLE
                 btResult?.visibility = View.INVISIBLE
                 imGPS?.visibility = View.VISIBLE
+                progressBar?.visibility = View.INVISIBLE
                 Toast.makeText(
                     this@MainActivity,
                     "$myCategory : $contador  coincidencias ",

@@ -2,6 +2,7 @@ package antoniomy82.ecommerce_retrofitkotlin.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import antoniomy82.ecommerce_retrofitkotlin.R
@@ -24,6 +25,11 @@ class ResultActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar_main)
+        toolbar.title = "  Listado generado"
+        toolbar.setLogo(R.drawable.ico_personal)
+        setSupportActionBar(toolbar)
 
         //Cargo todos los parámetros de recyclerView en mi RecyclerViewAdapter
         manager = LinearLayoutManager(this) //Mostrar como LinearLayout

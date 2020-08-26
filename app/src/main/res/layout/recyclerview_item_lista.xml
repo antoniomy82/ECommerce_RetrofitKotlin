@@ -23,7 +23,7 @@
         android:layout_weight="1"
         android:text="@string/tvname"
         android:textAlignment="gravity"
-        android:textColor="@color/blue_300"
+        android:textColor="@color/light_blue_700"
         android:textSize="14sp" />
 
     <TextView

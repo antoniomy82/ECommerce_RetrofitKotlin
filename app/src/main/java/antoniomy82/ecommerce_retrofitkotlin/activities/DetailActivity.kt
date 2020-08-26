@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import antoniomy82.ecommerce_retrofitkotlin.R
 import antoniomy82.ecommerce_retrofitkotlin.models.Ecommerce
 import com.squareup.picasso.Picasso
@@ -28,6 +29,11 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar_main)
+        toolbar.title = "  Detalle eComercio"
+        toolbar.setLogo(R.drawable.ico_personal)
+        setSupportActionBar(toolbar)
 
         //Definimos los enlaces con activity_detail
         val imDlogo: ImageView? = findViewById(R.id.imLogo)

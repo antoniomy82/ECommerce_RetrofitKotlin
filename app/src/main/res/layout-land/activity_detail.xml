@@ -39,8 +39,8 @@
                 android:id="@+id/imLogo"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_gravity="center"
                 android:layout_marginTop="5dp"
+                android:layout_gravity="center"
                 android:contentDescription="@string/im_logo"
                 app:srcCompat="@android:drawable/ic_menu_mapmode" />
 
@@ -156,7 +156,7 @@
                     android:id="@+id/imEmail"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginStart="84dp"
+                    android:layout_marginStart="220dp"
                     android:layout_marginTop="8dp"
                     android:contentDescription="@string/im_Demail"
                     app:layout_constraintStart_toStartOf="parent"
@@ -183,7 +183,7 @@
                     android:id="@+id/imTelefono"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginStart="84dp"
+                    android:layout_marginStart="220dp"
                     android:layout_marginTop="20dp"
                     android:contentDescription="@string/im_Dtelefono"
                     app:layout_constraintStart_toStartOf="parent"
@@ -204,14 +204,12 @@
                     android:id="@+id/imMaps"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="16dp"
                     android:contentDescription="@string/im_google_maps"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.213"
+                    app:layout_constraintHorizontal_bias="0.31"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.457"
                     app:srcCompat="@drawable/maps" />
 
                 <ImageView
@@ -221,8 +219,8 @@
                     android:contentDescription="@string/im_twiter"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/imInstagram"
-                    app:layout_constraintHorizontal_bias="0.526"
-                    app:layout_constraintStart_toEndOf="@+id/imMaps"
+                    app:layout_constraintHorizontal_bias="0.871"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.457"
                     app:srcCompat="@drawable/twitter" />
@@ -234,24 +232,25 @@
                     android:contentDescription="@string/im_instagram"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.573"
+                    app:layout_constraintHorizontal_bias="0.568"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.457"
+                    app:layout_constraintVertical_bias="0.49"
                     app:srcCompat="@drawable/instagram" />
 
                 <ImageView
                     android:id="@+id/imFB"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
+                    android:layout_marginEnd="92dp"
                     android:baselineAlignBottom="false"
                     android:contentDescription="@string/im_fb"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.74"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_bias="0.3"
+                    app:layout_constraintStart_toEndOf="@+id/imInstagram"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.457"
+                    app:layout_constraintVertical_bias="0.49"
                     app:srcCompat="@drawable/facebook" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
