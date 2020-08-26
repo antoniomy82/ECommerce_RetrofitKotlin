@@ -45,10 +45,10 @@ Una vez se obtengan los resultados, cuando "cliquemos" en un registro de la list
 
 Esta App ha sido realizada en MVC por simplicidad y tiempo.
 
-Diagrama MVC en el proyecto:
+- Diagrama MVC en el proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/mvc.png">
 ***
-Organización o estructura del proyecto:
+- Organización o estructura del proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/organizacion.PNG">
 
 ## STORYBOARD
