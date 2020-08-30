@@ -44,6 +44,7 @@ Una vez se obtengan los resultados, cuando "cliquemos" en un registro de la list
 ## Arquitectura y organización
 
 Esta App ha sido realizada en MVC por simplicidad y tiempo.
+Se puede descargar esta versión : https://github.com/antoniomy82/ECommerce_RetrofitKotlin/releases/tag/v1.0-mvc
 
 - Diagrama MVC en el proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/mvc.png">
