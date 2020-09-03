@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin.activities
+package antoniomy82.ecommerce_retrofitkotlin.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import antoniomy82.ecommerce_retrofitkotlin.R
-import antoniomy82.ecommerce_retrofitkotlin.adapters.RecyclerViewAdapter
+import antoniomy82.ecommerce_retrofitkotlin.ui.adapters.RecyclerViewAdapter
+import antoniomy82.ecommerce_retrofitkotlin.viewmodel.EcommerceViewModel
 
 /**
  *  Creado por Antonio Javier Morales Yáñez on 25/08/2020
@@ -38,7 +39,7 @@ class ResultActivity : AppCompatActivity() {
             findViewById(R.id.rvCategory) //Aquí definimos dónde tenemos la vista del recyclerView XML
         recyclerView?.layoutManager = manager
 
-        adapter = RecyclerViewAdapter(this, MainActivity.getEcommerceList())
+        adapter = RecyclerViewAdapter(this, EcommerceViewModel.getEcommerceList())
         recyclerView?.adapter = adapter
     }
 }

@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin.activities
+package antoniomy82.ecommerce_retrofitkotlin.ui
 
 import android.Manifest
 import android.app.AlertDialog
@@ -18,13 +18,13 @@ import antoniomy82.ecommerce_retrofitkotlin.R
 import antoniomy82.ecommerce_retrofitkotlin.interfaces.ApiService
 import antoniomy82.ecommerce_retrofitkotlin.models.Ecommerce
 import antoniomy82.ecommerce_retrofitkotlin.utils.GPSTracker
+import antoniomy82.ecommerce_retrofitkotlin.viewmodel.EcommerceViewModel
+import antoniomy82.ecommerce_retrofitkotlin.viewmodel.EcommerceViewModel.Companion.setEcommerceList
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
-@Suppress("NAME_SHADOWING")
 
 /**
  *  Creado por Antonio Javier Morales Yáñez on 23/08/2020
@@ -36,10 +36,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 //Clase que funciona como controlador del proyecto
 class MainActivity : AppCompatActivity() {
 
-    lateinit var service: ApiService
-    private val BASE_URL = "http://prod.klikin.com/commerces/public/"
 
-    var myCategory: String? = null
+    lateinit var service: ApiService
+    private val URL = "http://prod.klikin.com/commerces/public/"
+    private var myCategory: String? = null
     private var tvLoad: TextView? = null
     private var btResult: Button? = null
     private var edDireccion: EditText? = null
@@ -47,18 +47,6 @@ class MainActivity : AppCompatActivity() {
     private var imGPS: ImageView? = null
     private var progressBar: ProgressBar? = null
 
-
-    companion object {
-        private var ecommerceList: ArrayList<Ecommerce>? = null
-
-        fun getEcommerceList(): ArrayList<Ecommerce>? {
-            return ecommerceList
-        }
-
-        fun getEcommerce(indice: Int): Ecommerce? {
-            return ecommerceList?.get(indice)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,8 +66,8 @@ class MainActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
 
 
-        val sp_adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
-        spCateory.adapter = sp_adapter
+        val spAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
+        spCateory.adapter = spAdapter
 
 
         //Spinner Categoria
@@ -94,15 +82,15 @@ class MainActivity : AppCompatActivity() {
                 tvLoad?.visibility = View.VISIBLE
                 progressBar?.visibility = View.VISIBLE
                 btResult?.visibility = View.INVISIBLE
+
                 //Inicalizo valores
-                ecommerceList = null
                 edDireccion?.setText(R.string.aviso_gps)
                 miUbicacion = null
                 imGPS?.visibility = View.INVISIBLE
 
                 myCategory = categorias[position]
 
-                getAll() //Realizo el parseo
+                getEcommerceList() //Realizo el parseo
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -131,12 +119,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //Función que recibe todos los datos y almacena todos los datos cuya categoría coincida
-    fun getAll() {
+    /**
+     * BLOQUE DE FUNCIONES AUXILIARES  -- LÓGICA
+     */
+
+    //Función que recibe todos los eCommercios que coincidan con la categoría seleccionada
+    fun getEcommerceList() {
 
         //Recibimos todos los ECommerce
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -145,9 +137,8 @@ class MainActivity : AppCompatActivity() {
             ApiService::class.java
         )
 
-        ecommerceList = ArrayList<Ecommerce>() //Inicializo
 
-        service.getAllPosts().enqueue(object : Callback<List<Ecommerce>> {
+        service.getAllEcommerces().enqueue(object : Callback<List<Ecommerce>> {
             override fun onResponse(
                 call: Call<List<Ecommerce>>?,
                 response: Response<List<Ecommerce>>?
@@ -156,10 +147,11 @@ class MainActivity : AppCompatActivity() {
                 val comercios = response?.body()
                 val lenght: Int = comercios!!.size
                 var contador = 0
+                val ecommerceList = ArrayList<Ecommerce>() //Inicializo
 
                 for (i: Int in 0 until lenght) {
                     if (myCategory == (comercios[i].category.toString())) {
-                        ecommerceList?.add(
+                        ecommerceList.add(
                             Ecommerce(
                                 comercios[i].shortDescription,
                                 comercios[i].name,
@@ -174,6 +166,8 @@ class MainActivity : AppCompatActivity() {
                         )
                         contador++
                     }
+                    ecommerceList.let { setEcommerceList(it) } // Paso el resultado a ViewModel
+
                 }
                 tvLoad?.visibility = View.INVISIBLE
                 btResult?.visibility = View.INVISIBLE
@@ -192,32 +186,34 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    //Función usada para obtener Location (usado para distancia), en cada registro de la lista de eComercios por categoria
-    private fun getLocation (latitude:Double, longitude:Double, name:String): Location {
-        val myLocation = Location(name)
-        myLocation.latitude = latitude
-        myLocation.longitude= longitude
 
-        return myLocation
-    }
-
-    //Relleno las distancias respecto a la ubicación actual y ordeno la lista de ecomercios
+    //Ordeno la lista de eComercios por la distancia con respecto a la ubicación del smartphone
     private fun sortByDistance() {
-        ecommerceList = getEcommerceList()
-        val lenght: Int = ecommerceList!!.size
+
+        val ecommerceList = EcommerceViewModel.getEcommerceList()
 
         //Calculo la distancia entre el smartphone y los eComercios, y las introduzco en su variable distance
-        for (i: Int in 0 until lenght) {
-            if ((miUbicacion != null) && (ecommerceList!!.get(i).myLocation != null)) {
-                ecommerceList!!.get(i).distance =
-                    (miUbicacion!!.distanceTo(ecommerceList!!.get(i).myLocation))
+
+        for (i: Int in 0 until EcommerceViewModel.getSize()!!) {
+            if ((miUbicacion != null) && (ecommerceList!![i].myLocation != null)) {
+                ecommerceList[i].distance =
+                    (miUbicacion!!.distanceTo(ecommerceList[i].myLocation))
             }
         }
 
         //Ordeno el ArrayList por distance
         ecommerceList!!.sortBy { it.distance }
+        setEcommerceList(ecommerceList)
     }
 
+    //Función usada para obtener Location (usado para distancia), en cada registro de la lista de eComercios por categoria
+    private fun getLocation(latitude: Double, longitude: Double, name: String): Location {
+        val myLocation = Location(name)
+        myLocation.latitude = latitude
+        myLocation.longitude = longitude
+
+        return myLocation
+    }
 
     //Dialog para habilitar GPS
     private fun gps() {
@@ -268,18 +264,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     //Dialog GPS desactivado
+    @Suppress("NAME_SHADOWING")
     private fun dialogNoGPS() {
         val dialog = AlertDialog.Builder(this)
         dialog.setCancelable(false)
         dialog.setTitle("GPS DESACTIVADO")
         dialog.setMessage("¿Desea activar GPS?")
-        dialog.setPositiveButton("Aceptar") { _, id ->
+        dialog.setPositiveButton("Aceptar") { _, _ ->
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             this.startActivity(intent)
         }
-            .setNegativeButton("Cancelar ") { dialog, which ->
+            .setNegativeButton("Cancelar ") { dialog, _ ->
                 dialog.cancel()
             }
         val alert = dialog.create()

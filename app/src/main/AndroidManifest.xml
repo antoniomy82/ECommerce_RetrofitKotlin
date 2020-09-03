@@ -17,15 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.DetailActivity">
+        <activity android:name=".ui.DetailActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" /> <!-- intent filter para abrir correo -->
 
                 <data android:scheme="mailto" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ResultActivity" />
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".ui.ResultActivity" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

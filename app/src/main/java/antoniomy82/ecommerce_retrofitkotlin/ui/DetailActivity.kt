@@ -1,5 +1,5 @@
 
-package antoniomy82.ecommerce_retrofitkotlin.activities
+package antoniomy82.ecommerce_retrofitkotlin.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import antoniomy82.ecommerce_retrofitkotlin.R
 import antoniomy82.ecommerce_retrofitkotlin.models.Ecommerce
+import antoniomy82.ecommerce_retrofitkotlin.viewmodel.EcommerceViewModel
 import com.squareup.picasso.Picasso
 
 /**
@@ -43,7 +44,7 @@ class DetailActivity : AppCompatActivity() {
         val tvDemail: TextView? = findViewById(R.id.tv_Demail)
         val tvDtelefono: TextView? = findViewById(R.id.tv_Dtelefono)
 
-        this.miEcommerce = MainActivity.getEcommerce(intent.getIntExtra("miIndice", 0))
+        this.miEcommerce = EcommerceViewModel.getEcommerce(intent.getIntExtra("miIndice", 0))
         val direccion: String =
             miEcommerce!!.address!!.street + ", " + miEcommerce!!.address!!.zip + " , " + miEcommerce!!.address!!.city + "," + miEcommerce!!.address!!.country
 
