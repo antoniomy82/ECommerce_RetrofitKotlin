@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin.activities
+package antoniomy82.ecommerce_retrofitkotlin.ui
 
 import android.Manifest
 import android.app.AlertDialog
@@ -18,6 +18,8 @@ import antoniomy82.ecommerce_retrofitkotlin.R
 import antoniomy82.ecommerce_retrofitkotlin.interfaces.ApiService
 import antoniomy82.ecommerce_retrofitkotlin.models.Ecommerce
 import antoniomy82.ecommerce_retrofitkotlin.utils.GPSTracker
+import antoniomy82.ecommerce_retrofitkotlin.viewmodel.EcommerceViewModel
+import antoniomy82.ecommerce_retrofitkotlin.viewmodel.EcommerceViewModel.Companion.setEcommerceList
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,18 +49,6 @@ class MainActivity : AppCompatActivity() {
     private var imGPS: ImageView? = null
     private var progressBar: ProgressBar? = null
 
-
-    companion object {
-        private var ecommerceList: ArrayList<Ecommerce>? = null
-
-        fun getEcommerceList(): ArrayList<Ecommerce>? {
-            return ecommerceList
-        }
-
-        fun getEcommerce(indice: Int): Ecommerce? {
-            return ecommerceList?.get(indice)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,8 +84,8 @@ class MainActivity : AppCompatActivity() {
                 tvLoad?.visibility = View.VISIBLE
                 progressBar?.visibility = View.VISIBLE
                 btResult?.visibility = View.INVISIBLE
+
                 //Inicalizo valores
-                ecommerceList = null
                 edDireccion?.setText(R.string.aviso_gps)
                 miUbicacion = null
                 imGPS?.visibility = View.INVISIBLE
@@ -145,9 +135,9 @@ class MainActivity : AppCompatActivity() {
             ApiService::class.java
         )
 
-        ecommerceList = ArrayList<Ecommerce>() //Inicializo
 
-        service.getAllPosts().enqueue(object : Callback<List<Ecommerce>> {
+
+        service.getAllEcommerces().enqueue(object : Callback<List<Ecommerce>> {
             override fun onResponse(
                 call: Call<List<Ecommerce>>?,
                 response: Response<List<Ecommerce>>?
@@ -156,10 +146,11 @@ class MainActivity : AppCompatActivity() {
                 val comercios = response?.body()
                 val lenght: Int = comercios!!.size
                 var contador = 0
+                val ecommerceList = ArrayList<Ecommerce>() //Inicializo
 
                 for (i: Int in 0 until lenght) {
                     if (myCategory == (comercios[i].category.toString())) {
-                        ecommerceList?.add(
+                        ecommerceList.add(
                             Ecommerce(
                                 comercios[i].shortDescription,
                                 comercios[i].name,
@@ -174,6 +165,8 @@ class MainActivity : AppCompatActivity() {
                         )
                         contador++
                     }
+                    ecommerceList.let { setEcommerceList(it) } // Paso el resultado a ViewModel
+
                 }
                 tvLoad?.visibility = View.INVISIBLE
                 btResult?.visibility = View.INVISIBLE
@@ -203,19 +196,21 @@ class MainActivity : AppCompatActivity() {
 
     //Relleno las distancias respecto a la ubicación actual y ordeno la lista de ecomercios
     private fun sortByDistance() {
-        ecommerceList = getEcommerceList()
-        val lenght: Int = ecommerceList!!.size
+
+        val ecommerceList = EcommerceViewModel.getEcommerceList()
 
         //Calculo la distancia entre el smartphone y los eComercios, y las introduzco en su variable distance
-        for (i: Int in 0 until lenght) {
-            if ((miUbicacion != null) && (ecommerceList!!.get(i).myLocation != null)) {
-                ecommerceList!!.get(i).distance =
-                    (miUbicacion!!.distanceTo(ecommerceList!!.get(i).myLocation))
+
+        for (i: Int in 0 until EcommerceViewModel.getSize()!!) {
+            if ((miUbicacion != null) && (ecommerceList!![i].myLocation != null)) {
+                ecommerceList[i].distance =
+                    (miUbicacion!!.distanceTo(ecommerceList[i].myLocation))
             }
         }
 
         //Ordeno el ArrayList por distance
         ecommerceList!!.sortBy { it.distance }
+        ecommerceList.let { setEcommerceList(it) }
     }
 
 
