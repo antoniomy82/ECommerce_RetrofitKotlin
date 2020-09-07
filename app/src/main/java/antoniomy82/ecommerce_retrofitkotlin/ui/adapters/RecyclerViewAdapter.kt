@@ -49,9 +49,9 @@ class RecyclerViewAdapter(var context: Context, listaItems: ArrayList<Ecommerce>
             ecommerce?.address?.street + " , " + ecommerce?.address?.city + " , (" + ecommerce?.address?.country + ")"
         val distancia: String = "Distancia: " + String.format(
             "%.2f",
-            (ecommerce?.distance)?.div(1000)
+            (ecommerce?.distance)
         ) + " Km"  //Convierto a KM con 2 decimales
-        val cateoria: String? = ecommerce?.category
+        val categoria: String? = ecommerce?.category
 
         if (miViewHolder != null) {
             miViewHolder.tvNombre.text = ecommerce?.name
@@ -62,8 +62,8 @@ class RecyclerViewAdapter(var context: Context, listaItems: ArrayList<Ecommerce>
             if (!distancia.isBlank()) {
                 miViewHolder.tvDistancia.text = distancia
             }
-            if (!cateoria.isNullOrBlank()) {
-                miViewHolder.tvCategoria.text = cateoria
+            if (!categoria.isNullOrBlank()) {
+                miViewHolder.tvCategoria.text = categoria
             }
         }
 

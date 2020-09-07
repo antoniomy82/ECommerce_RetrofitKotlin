@@ -41,5 +41,6 @@ class ResultActivity : AppCompatActivity() {
 
         adapter = RecyclerViewAdapter(this, EcommerceViewModel.getEcommerceList())
         recyclerView?.adapter = adapter
+
     }
 }
