@@ -43,6 +43,11 @@ Una vez se obtengan los resultados, cuando "cliquemos" en un registro de la list
 
 ## Arquitectura y organización
 
+**Actualmente estoy cambiando el patrón arquitectonico a MVVM con funciones de JetPack, con lo que en breve actualizaré este documento**
+
+
+Se puede encontrar la nueva versión MVVM : https://github.com/antoniomy82/ECommerce_RetrofitKotlin/releases/tag/v1.1-mvvm
+
 Esta App ha sido realizada en MVC por simplicidad y tiempo.
 
 
