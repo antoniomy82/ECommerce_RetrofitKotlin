@@ -1,5 +1,14 @@
 # eCommerce
 
+##NOTA
+Esta App está en fase de desarrollo, queda pendiente de reestructurar a MVVM correctamente.
+- Separar companion object de EcommerceViewModel, y dejarlo como modelo de datos (parcelable o serializable).
+- Quitar findbyId e utilizar Binding.
+- Sustituir null por let o ?:
+- Reubicar progress bar.
+- Crear la lista de categorias de forma dinámica.
+
+
 Descripción de la App:
 
 La idea es hacer una pequeña aplicación que consuma el resultado de una llamada a un API y que muestre la lista de comercios y su correspondiente detalle. 
