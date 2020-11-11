@@ -1,6 +1,6 @@
 # eCommerce
 
-##NOTA
+## NOTA
 Esta App está en fase de desarrollo, queda pendiente de reestructurar a MVVM correctamente.
 - Separar companion object de EcommerceViewModel, y dejarlo como modelo de datos (parcelable o serializable).
 - Quitar findbyId e utilizar Binding.
