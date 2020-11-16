@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="antoniomy82.ecommerce_retrofitkotlin.ui.DetailActivity">
+    tools:context="antoniomy82.ecommerce_retrofitkotlin.view.DetailActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_main"

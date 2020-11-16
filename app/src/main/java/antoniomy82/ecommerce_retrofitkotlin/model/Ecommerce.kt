@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin.models
+package antoniomy82.ecommerce_retrofitkotlin.model
 
 import android.location.Location
 

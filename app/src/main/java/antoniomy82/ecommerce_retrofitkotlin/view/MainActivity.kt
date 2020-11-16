@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin.ui
+package antoniomy82.ecommerce_retrofitkotlin.view
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var progressBar: ProgressBar? = null
     private var spCateory: Spinner? = null
     private var categorias: Array<String>? = null
+    private var ecommerceViewModel: EcommerceViewModel? = null //Declaro ViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         val spAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias!!)
         spCateory?.adapter = spAdapter
 
+
         //Spinner Categoria
         spCateory?.onItemSelectedListener = object : OnItemSelectedListener {
 
@@ -67,13 +69,17 @@ class MainActivity : AppCompatActivity() {
                 id: Long
             ) {
                 //Inicalizo valores
-                tvLoad?.visibility = View.VISIBLE
-                progressBar?.visibility = View.VISIBLE
+                tvLoad?.visibility = View.INVISIBLE
+                progressBar?.visibility = View.INVISIBLE
                 btResult?.visibility = View.INVISIBLE
 
                 edDireccion?.setText(R.string.aviso_gps)
                 myCategory = categorias?.get(position)
 
+                /*
+                ecommerceViewModel= ViewModelProvider(this@MainActivity).get(EcommerceViewModel::class.java) //Inicializo viewModel
+                ecommerceViewModel.getEcommerceList()
+                */
                 EcommerceViewModel.getRetrofitEcommerceList(myCategory.toString()) //Realizo el parseo
 
             }
@@ -90,10 +96,10 @@ class MainActivity : AppCompatActivity() {
 
             EcommerceViewModel.gps(applicationContext, this)
 
-            if (EcommerceViewModel.getMiUbicacion() != null) {
+            if (EcommerceViewModel.getMyLocation() != null) {
                 tvLoad?.visibility = View.INVISIBLE
                 progressBar?.visibility = View.INVISIBLE
-                edDireccion!!.setText(EcommerceViewModel.getMiDireccion())
+                edDireccion?.setText(EcommerceViewModel.getMiDireccion())
                 btResult?.visibility = View.VISIBLE
 
 
@@ -105,10 +111,10 @@ class MainActivity : AppCompatActivity() {
         //Botón que muestra una lista de todos los eComercios, filtrados por categoría y distancia al Smartphone
         btResult?.setOnClickListener {
 
-            if (EcommerceViewModel.getMiUbicacion() == null) {
+            if (EcommerceViewModel.getMyLocation() == null) {
                 tvLoad?.visibility = View.VISIBLE
                 progressBar?.visibility = View.VISIBLE
-                edDireccion!!.setText(R.string.aviso_gps)
+                edDireccion?.setText(R.string.aviso_gps)
             } else {
                 btResult?.visibility = View.VISIBLE
                 val intent = Intent(applicationContext, ResultActivity::class.java)
@@ -116,6 +122,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     //Dialog por si el GPS está apagado
     @Suppress("NAME_SHADOWING")

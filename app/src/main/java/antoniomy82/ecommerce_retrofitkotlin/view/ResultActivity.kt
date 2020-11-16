@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin.ui
+package antoniomy82.ecommerce_retrofitkotlin.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import antoniomy82.ecommerce_retrofitkotlin.R
-import antoniomy82.ecommerce_retrofitkotlin.ui.adapters.RecyclerViewAdapter
 import antoniomy82.ecommerce_retrofitkotlin.viewmodel.EcommerceViewModel
 
 /**

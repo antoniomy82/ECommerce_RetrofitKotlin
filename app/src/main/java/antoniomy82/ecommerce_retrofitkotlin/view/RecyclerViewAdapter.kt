@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin.ui.adapters
+package antoniomy82.ecommerce_retrofitkotlin.view
 
 import android.content.Context
 import android.content.Intent
@@ -9,8 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import antoniomy82.ecommerce_retrofitkotlin.R
-import antoniomy82.ecommerce_retrofitkotlin.models.Ecommerce
-import antoniomy82.ecommerce_retrofitkotlin.ui.DetailActivity
+import antoniomy82.ecommerce_retrofitkotlin.model.Ecommerce
 
 /**
  *  Creado por Antonio Javier Morales Yáñez on 24/08/2020
