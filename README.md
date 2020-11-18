@@ -1,5 +1,14 @@
 # eCommerce
 
+## NOTA
+Esta App está en fase de desarrollo, queda pendiente reestructurar a MVVM correctamente.
+- Separar companion object de EcommerceViewModel, y dejarlo como modelo de datos (parcelable o serializable).
+- Quitar findbyId e utilizar Binding.
+- Sustituir null por let o ?:
+- Reubicar progress bar.
+- Crear la lista de categorias de forma dinámica.
+
+
 Descripción de la App:
 
 La idea es hacer una pequeña aplicación que consuma el resultado de una llamada a un API y que muestre la lista de comercios y su correspondiente detalle. 
@@ -43,15 +52,12 @@ Una vez se obtengan los resultados, cuando "cliquemos" en un registro de la list
 
 ## Arquitectura y organización
 
-**Actualmente estoy cambiando el patrón arquitectonico a MVVM con funciones de JetPack, con lo que en breve actualizaré este documento**
-
-
-Se puede encontrar la nueva versión MVVM : https://github.com/antoniomy82/ECommerce_RetrofitKotlin/releases/tag/v1.1-mvvm
+<font color='red'> **Actualizando proyecto a MVVM, LiveData y Data Binding** </font>
 
 Esta App ha sido realizada en MVC por simplicidad y tiempo.
 
-
-Se puede descargar esta versión : https://github.com/antoniomy82/ECommerce_RetrofitKotlin/releases/tag/v1.0-mvc
+**Versión estable y sin bugs en MVC:**
+https://github.com/antoniomy82/ECommerce_RetrofitKotlin/releases/tag/v1.0-mvc
 
 - Diagrama MVC en el proyecto:
 <img src="https://github.com/antoniomy82/ECommerce_RetrofitKotlin/blob/master/Screenshots/mvc.png">
