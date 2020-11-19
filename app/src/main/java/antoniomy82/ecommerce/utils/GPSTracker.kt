@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin.utils
+package antoniomy82.ecommerce.utils
 
 import android.Manifest
 import android.annotation.SuppressLint

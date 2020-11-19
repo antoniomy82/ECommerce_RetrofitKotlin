@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce_retrofitkotlin.model
+package antoniomy82.ecommerce.model
 
 import retrofit2.Call
 import retrofit2.http.GET
@@ -14,4 +14,5 @@ interface ApiService {
 
     @GET("?category")
     fun getAllEcommerces(): Call<List<Ecommerce>>
+
 }

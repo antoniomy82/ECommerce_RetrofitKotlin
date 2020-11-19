@@ -6,7 +6,7 @@
     <string name="tvname">tvName</string>
     <string name="tvDireccion">C/XXX, YYYY, (ZZZ)</string>
     <string name="tvDistancia">0 Km</string>
-    <string name="tvLoad" tools:ignore="TypographyEllipsis">Cargando resultados… por favor espere...</string>
+    <string name="tvLoad" tools:ignore="TypographyEllipsis">Cargando categorias… por favor espere...</string>
     <string name="edDireccion">"Obtener dirección GPS, pulse icono inferior"</string>
     <string name="imGPS">Obtener ubicación GPS</string>
     <string name="tvCategoria">SHOPPING</string>

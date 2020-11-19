@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="antoniomy82.ecommerce_retrofitkotlin">
+    package="antoniomy82.ecommerce">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,15 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.DetailActivity">
+        <activity android:name="antoniomy82.ecommerce.view.DetailActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" /> <!-- intent filter para abrir correo -->
 
                 <data android:scheme="mailto" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.ResultActivity" />
-        <activity android:name=".view.MainActivity">
+        <activity android:name="antoniomy82.ecommerce.view.ResultActivity" />
+        <activity android:name="antoniomy82.ecommerce.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

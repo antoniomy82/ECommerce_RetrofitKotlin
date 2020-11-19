@@ -1,5 +1,5 @@
 
-package antoniomy82.ecommerce_retrofitkotlin.view
+package antoniomy82.ecommerce.view
 
 import android.content.Intent
 import android.net.Uri
@@ -11,9 +11,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import antoniomy82.ecommerce_retrofitkotlin.R
-import antoniomy82.ecommerce_retrofitkotlin.model.Ecommerce
-import antoniomy82.ecommerce_retrofitkotlin.viewmodel.EcommerceViewModel
+import antoniomy82.ecommerce.R
+import antoniomy82.ecommerce.model.Ecommerce
+import antoniomy82.ecommerce.viewmodel.EcommerceViewModel
 import com.squareup.picasso.Picasso
 
 /**
