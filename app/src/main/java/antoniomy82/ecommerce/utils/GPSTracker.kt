@@ -1,7 +1,6 @@
 package antoniomy82.ecommerce.utils
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Service
 import android.content.Context
@@ -26,7 +25,6 @@ open class GPSTracker : Service {
     private var mContext: Context? = null
     private var isGPSEnabled = false        // Flag for GPS status
     private var isNetworkEnabled = false    // Flag for network status
-    private var canGetLocation = false      // if Location co-ordinates are available using GPS or Network
 
     private var location: Location? = null  // Location
     private var latitude = 0.0              // Latitude
@@ -49,13 +47,20 @@ open class GPSTracker : Service {
         private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Long = 1000 // 10 meters
 
         // The minimum time between updates in milliseconds
-        private const val MIN_TIME_BW_UPDATES = 1000 * 60.toLong()  // 1 minute
+        private const val MIN_TIME_BW_UPDATES = 1000 * 30.toLong()  // 30 seconds
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getLocation(): Location? {
+
+    fun gpsIsActive(): Boolean {
+        isGPSEnabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
+
+        return isGPSEnabled
+    }
+
+    fun getLocation(): Location? {
         try {
-            locationManager = mContext!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            locationManager =
+                mContext?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
             // Getting GPS status
             isGPSEnabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -63,36 +68,24 @@ open class GPSTracker : Service {
             // Getting network status
             isNetworkEnabled = locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-            //Compruebo que tengo permisos
-            if (isGPSEnabled && isNetworkEnabled) {
-                canGetLocation = true
-                if (isNetworkEnabled) {
-                    locationManager!!.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER,
-                        MIN_TIME_BW_UPDATES,
-                        MIN_DISTANCE_CHANGE_FOR_UPDATES.toFloat(),
-                        mLocationListener
-                    )
-                    Log.d("Network", "Network")
-
-                    if (locationManager != null) {
-                        location =
-                            locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                        if (location != null) {
-                            latitude = location!!.latitude
-                            longitude = location!!.longitude
-                        }
-                    }
-                }
-            }
-
             // If GPS enabled, get latitude/longitude using GPS Services
-            if (isGPSEnabled) {
+            if (isGPSEnabled && isNetworkEnabled) {
                 if (location == null) {
-                    if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                            activity!!, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(
+                            activity!!,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                            activity!!, Manifest.permission.ACCESS_COARSE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
 
-                            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 50)
+                        ActivityCompat.requestPermissions(
+                            activity!!,
+                            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                            50
+                        )
+                        Log.d("checkPermission", "check")
+
                     } else {
                         locationManager!!.requestLocationUpdates(
                             LocationManager.GPS_PROVIDER,
@@ -103,7 +96,7 @@ open class GPSTracker : Service {
                         Log.d("GPS Enabled", "GPS Enabled")
 
                         if (locationManager != null) {
-                            location =
+                            this.location =
                                 locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
                             if (location != null) {
@@ -114,10 +107,12 @@ open class GPSTracker : Service {
                     }
                 }
             }
+
         } catch (e: Exception) { e.printStackTrace() }
 
         return location
     }//getLocation
+
 
     private val mLocationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -152,11 +147,6 @@ open class GPSTracker : Service {
         return longitude
     }
 
-    /**
-     * Function to check GPS/Wi-Fi enabled
-     * @return boolean
-     */
-    fun canGetLocation(): Boolean { return canGetLocation }
 
     override fun onBind(arg0: Intent): IBinder? { return null }
 
@@ -165,15 +155,16 @@ open class GPSTracker : Service {
      *
      * @return complete address in String
      */
-    fun getLocationAddress(mlatitude: Double, mlongitude: Double): String {
-        return if (canGetLocation) {
+    fun getAddressFromLocation(mlatitude: Double, mlongitude: Double): String {
+        //getLocation()!=null || mlongitude!=null && mlatitude!=null
+        return run {
             val geocoder = Geocoder(mContext, Locale.getDefault())
             // Get the current location from the input parameter list
             // Create a list to contain the result address
             val addresses: List<Address>?
 
             addresses = try {
-                    geocoder.getFromLocation(mlatitude, mlongitude, 1) // Devuelve una dirección
+                geocoder.getFromLocation(mlatitude, mlongitude, 1) // Devuelve una dirección
 
             } catch (e1: IOException) {
                 e1.printStackTrace()
@@ -193,22 +184,37 @@ open class GPSTracker : Service {
                 // Get the first address
                 val address = addresses[0]
                 /*
-                 * Format the first line of address (if available), city, and
-                 * country name.
-                 */
-                 /*
-
-                      address.getCountryName());*/
+                     * Format the first line of address (if available), city, and
+                     * country name.
+                     */
+                /* address.getCountryName());*/
                 // Return String format
-                String.format("%s",  // If there's a street address, add it
+                String.format(
+                    "%s",  // If there's a street address, add it
                     address.getAddressLine(0), "",  // Locality is usually a city
                     address.locality
                 )
             } else {
                 "DIRECCIÓN NO ENCONTRADA: \n ! GPS sin señal ! \n Intentelo más tarde \n Pruebe en un lugar abierto, evite los interiores."
             }
-        } else {
-            "Localización no disponible"
         }
     }
+
+    fun getLocationFromAddress(myAddress: String): Location {
+
+        val geocoder = Geocoder(mContext, Locale.getDefault())
+        val addresses: List<Address> = geocoder.getFromLocationName(myAddress, 1)
+
+        val address: Address = addresses[0]
+        val latitude = address.latitude
+        val longitude = address.longitude
+
+        val myLocation = Location("locationFromAddress")
+        myLocation.latitude = latitude
+        myLocation.longitude = longitude
+
+        return myLocation
+    }
+
+
 }

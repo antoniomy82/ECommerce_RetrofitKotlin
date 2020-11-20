@@ -1,37 +1,78 @@
 package antoniomy82.ecommerce.viewmodel
 
-import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import antoniomy82.ecommerce.R
 import antoniomy82.ecommerce.databinding.ActivityMainBinding
 import antoniomy82.ecommerce.model.Ecommerce
-import antoniomy82.ecommerce.model.EcommerceRepository
-import antoniomy82.ecommerce.model.EcommerceRepositoryImpl
+import antoniomy82.ecommerce.model.EcommerceObservable
+import antoniomy82.ecommerce.ui.ResultActivity
 import antoniomy82.ecommerce.utils.GPSTracker
-import antoniomy82.ecommerce.view.ResultActivity
 
 class EcommerceViewModel : ViewModel() {
 
     private var context: Context? = null
-    var activityMainBinding: ActivityMainBinding? = null
     private var activity: Activity? = null
-    private var categoriesList: List<String>? = listOf("..")
-    private var spAdapter: ArrayAdapter<String>? = null
+    private var categoriesList: List<String>? = null //Observable
+    private var ecommerceList = ArrayList<Ecommerce>() //Observable
+
+    var activityMainBinding: ActivityMainBinding? = null
+    private var ecommerceObservable: EcommerceObservable = EcommerceObservable()
+
+    private var myLocation: Location? = null
+    private var myAddress: String? = null
+    private var gps = GPSTracker()
+
+    companion object {
+        private var myEcommerces = ArrayList<Ecommerce>()
+
+        fun getEcommercesListCompanion(): ArrayList<Ecommerce> {
+            return myEcommerces
+        }
+
+        fun setEcommercesListCompanion(myEcommerce: ArrayList<Ecommerce>) {
+            this.myEcommerces = myEcommerce
+        }
+
+        fun getEcommerceCompanion(position: Int): Ecommerce {
+            return myEcommerces[position]
+        }
+    }
+
+    fun callEcommerceList(myCategory: String) {
+        ecommerceObservable.callEcommerces(myCategory)
+    }
+
+    fun callCategoriesList() {
+        ecommerceObservable.callCategoriesList()
+    }
+
+    fun getCategoriesList(): MutableLiveData<List<String>> {
+        return ecommerceObservable.getCategoriesList()
+    }
+
+    fun getEcommercesList(): MutableLiveData<ArrayList<Ecommerce>> {
+        return ecommerceObservable.getEcommerces()
+    }
+
+    fun setCategoriesList(categoriesList: List<String>) {
+        this.categoriesList = categoriesList
+    }
+
+    fun setEcommercesList(ecommerceList: ArrayList<Ecommerce>) {
+        this.ecommerceList = ecommerceList
+    }
 
 
     fun setMainActivityContextBinding(
@@ -43,34 +84,17 @@ class EcommerceViewModel : ViewModel() {
         this.activity = activity
         this.activityMainBinding = activityMainBinding
 
+        gps = GPSTracker(myContext, activity)
         activityMainBinding.btResultado.visibility = View.GONE
 
-        if (getCategoriesList() != null) {
-            loading()
-        } else {
-            val runnable = Runnable {
-                loading()
-                Log.d("Esperando", " ...")
-            }
-            val handler = Handler()
-            handler.postDelayed(runnable, 4000)
-        }
-        /*
-        A partir de aquí bindearlo y hacer que coja las categorias automaticamente.
-         */
+        spinnerCategories()
+    }
 
-        spAdapter = context?.let {
-            ArrayAdapter(
-                it,
-                android.R.layout.simple_spinner_item,
-                categoriesList!!
-            )
-        }
-        activityMainBinding.spCategory.adapter = spAdapter
 
-        //Spinner Categoria
+    private fun spinnerCategories() {
+        //Spinner Categoria val myList = context?.resources?.getStringArray(R.array.Categories)
 
-        activityMainBinding.spCategory.onItemSelectedListener =
+        activityMainBinding?.spCategory?.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
 
                 override fun onItemSelected(
@@ -80,164 +104,54 @@ class EcommerceViewModel : ViewModel() {
                     id: Long
                 ) {
 
-
-                    activityMainBinding.edDireccion.setText(R.string.aviso_gps)
-
-                    getRetrofitEcommerceList(
-                        (categoriesList?.get(position) ?: 0).toString()
-                    ) //Realizo el parseo ***
-
+                    activityMainBinding?.edDireccion?.setText(R.string.aviso_gps)
+                    if (categoriesList != null) callEcommerceList(categoriesList!![position])
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    categoriesList?.get(0)
-                        ?.let { getRetrofitEcommerceList(it) } //Realizo el parseo
+                    callEcommerceList(categoriesList!![0]) //Realizo el parseo
 
                 }
             }
-
-
     }
 
 
-    fun loading() {
-        activityMainBinding?.progressBar?.visibility = View.VISIBLE
-        activityMainBinding?.tvLoad?.visibility = View.VISIBLE
+    //Ordeno la lista de eComercios por la distancia con respecto a la ubicación del smartphone
+    private fun sortByDistance(miUbicacion: Location) {
 
-
-        val mydinamiList = getCategoriesList()
-        if (mydinamiList != null) {
-            categoriesList = mydinamiList
-            spAdapter = context?.let {
-                ArrayAdapter(
-                    it,
-                    android.R.layout.simple_spinner_item,
-                    categoriesList!!
-                )
+        for (i: Int in 0 until ecommerceList.size) {
+            if (ecommerceList[i].myLocation != null) {
+                ecommerceList[i].distance =
+                    (miUbicacion.distanceTo(ecommerceList[i].myLocation).div(1000))
             }
-            activityMainBinding?.spCategory?.adapter = spAdapter
-
-            activityMainBinding?.progressBar?.visibility = View.GONE
-            activityMainBinding?.tvLoad?.visibility = View.GONE
-
         }
 
+        ecommerceList.sortBy { it.distance }  //Ordeno el ArrayList por distance
     }
 
 
-    companion object {
-        private var ecommerceRepository: EcommerceRepository = EcommerceRepositoryImpl()
-        private var ecommerceList = ArrayList<Ecommerce>()
-        private var myLocation: Location? = null
-        private var myAddress: String? = null
-
-        fun getEcommerceList(): ArrayList<Ecommerce>? {
-            return ecommerceList
-        }
-
-        fun getEcommerce(indice: Int): Ecommerce? {
-            return ecommerceList[indice]
-        }
-
-
-        fun getMyLocation(): Location? {
-            return myLocation
-        }
-
-
-        fun getMiDireccion(): String? {
-            return myAddress
-        }
-
-
-        //Función que recibe todos los eCommercios que coincidan con la categoría seleccionada
-        fun getRetrofitEcommerceList(myCategory: String) {
-            this.ecommerceList = ecommerceRepository.getEcommerces(myCategory)
-        }
-
-        fun getCategoriesList(): List<String>? {
-            return ecommerceRepository.getCategoriesList()
-        }
-
-        //Ordeno la lista de eComercios por la distancia con respecto a la ubicación del smartphone
-        fun sortByDistance(miUbicacion: Location) {
-
-            for (i: Int in 0 until ecommerceList.size) {
-                if (ecommerceList[i].myLocation != null) {
-                    ecommerceList[i].distance =
-                        (miUbicacion.distanceTo(ecommerceList[i].myLocation).div(1000))
-                }
-            }
-
-            ecommerceList.sortBy { it.distance }  //Ordeno el ArrayList por distance
-        }
-
-        //Función usada para obtener Location (usado para distancia), en cada registro de la lista de eComercios por categoria
-        private fun getLocation(latitude: Double, longitude: Double, name: String): Location {
-            val myLocation = Location(name)
-            myLocation.latitude = latitude
-            myLocation.longitude = longitude
-
-            return myLocation
-        }
-
-    }
-
-    //Compruebo que tengo acceso a GPS y obtengo ubicación
-    //Dividir esto en 2 funciones - chekGPS y getLocation
-    private fun checkGpsAccessGetLocation(context: Context?, activity: Activity?) {
-        val gps = GPSTracker(context, activity)
-
-        //Chequeo si tenemos los permisos de GPS
-        if (context?.let {
-                ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            } != PackageManager.PERMISSION_GRANTED && context?.let {
-                ActivityCompat.checkSelfPermission(
-                    it, Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            } != PackageManager.PERMISSION_GRANTED) {
-
-            if (activity != null) {
-                ActivityCompat.requestPermissions(
-                    activity,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    1
-                )
-            }
-
-        } else { //Tengo permisos
-            if (gps.canGetLocation()) { //Tengo GPS activo
-                val latitude: Double = gps.getLatitude()
-                val longitude: Double = gps.getLongitude()
-
-                myLocation = getLocation(
-                    gps.getLatitude(),
-                    gps.getLongitude(),
-                    "miUbicacion"
-                ) //Obtengo mi location
-                myAddress = gps.getLocationAddress(latitude, longitude)
-
-            } else {//GPS deshabilitado o no tengo GPS
-                Toast.makeText(context, "Active GPS", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    //Dialog por si el GPS está apagado
+    //Dialog por si GPS está apagado
     private fun dialogGpsOff() {
         val dialog = AlertDialog.Builder(activity)
         dialog.setCancelable(false)
         dialog.setTitle("GPS DESACTIVADO")
-        dialog.setMessage("¿Desea activar GPS?")
-        dialog.setPositiveButton("Aceptar") { _, _ ->
+        dialog.setMessage("¿Desea activar GPS o usar dirección por defecto?")
+
+        dialog.setPositiveButton("Activar GPS") { _, _ ->
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             activity?.startActivity(intent)
+
+            val runnable = Runnable {
+                myLocation = gps.getLocation()
+            }
+            val handler = Handler(Looper.getMainLooper())
+            handler.postDelayed(runnable, 5000)
         }
-            .setNegativeButton("Cancelar ") { dialog, _ ->
-                dialog.cancel()
+            .setNegativeButton("Dirección por defecto ") { _, _ ->
+                myAddress = "Puerta del Sol, 28013, Madrid, Spain"
+                myLocation = gps.getLocationFromAddress(myAddress!!)
+                activityMainBinding?.edDireccion?.setText(myAddress)
+                activityMainBinding?.btResultado?.visibility = View.VISIBLE
             }
         val alert = dialog.create()
         alert.show()
@@ -245,36 +159,48 @@ class EcommerceViewModel : ViewModel() {
 
     //Botón que obtiene la dirección mediante GPS de nuestro Smartphone
     fun onClickGPS() {
-        checkGpsAccessGetLocation(context, activity)
 
-        if (getMyLocation() != null) {
+        if (gps.gpsIsActive()) {
+            myLocation = gps.getLocation()
 
-            //Otra opción de Binding con una etiqueta String en el XML
-            //activityMainBinding?.setVariable(BR.labelAddress, getMiDireccion().toString())
-
-            activityMainBinding?.edDireccion?.setText(getMiDireccion().toString())
-            activityMainBinding?.btResultado?.visibility = View.VISIBLE
-
+            myLocation.let {
+                myAddress =
+                    gps.getAddressFromLocation(myLocation!!.latitude, myLocation!!.longitude)
+                //Otra opción de Binding con una etiqueta String en el XML
+                //activityMainBinding?.setVariable(BR.labelAddress, getMiDireccion().toString())
+                activityMainBinding?.edDireccion?.setText(myAddress.toString())
+                activityMainBinding?.btResultado?.visibility = View.VISIBLE
+            }
         } else {
+            Toast.makeText(context, "GPS APAGADO", Toast.LENGTH_LONG).show()
             dialogGpsOff()
         }
     }
 
     //Botón que muestra resultados
-    //Poner una dirección por defecto si GPS apagado.
     fun onClickResult() {
 
-        if (getMyLocation() == null) {
+        if (myLocation == null) {
             activityMainBinding?.edDireccion?.setText(R.string.aviso_gps)
         } else {
-            getMyLocation()?.let {
+            myLocation?.let {
                 sortByDistance(it)
             }
 
-            val intent = Intent(activity, ResultActivity::class.java)
-            activity?.startActivity(intent)
+            activityMainBinding?.btResultado?.visibility = View.GONE
+            activityMainBinding?.progressBar?.visibility = View.VISIBLE
+            activityMainBinding?.tvLoad?.visibility = View.VISIBLE
+
+
+            val runnable = Runnable {
+                activityMainBinding?.progressBar?.visibility = View.GONE
+                activityMainBinding?.tvLoad?.visibility = View.GONE
+                val intent = Intent(activity, ResultActivity::class.java)
+                activity?.startActivity(intent)
+            }
+            val handler = Handler(Looper.getMainLooper())
+            handler.postDelayed(runnable, 1000)
         }
     }
-
 
 }

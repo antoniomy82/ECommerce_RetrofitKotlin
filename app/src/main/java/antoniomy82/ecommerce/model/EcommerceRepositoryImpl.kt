@@ -1,7 +1,7 @@
 package antoniomy82.ecommerce.model
 
-import android.os.Handler
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -9,12 +9,12 @@ import retrofit2.Response
 
 class EcommerceRepositoryImpl : EcommerceRepository {
 
-    private var categoriesList: List<String>? = null
-    var parseCategoriesFinished: String? = "NO"
+    private var categoriesList = MutableLiveData<List<String>>()
+    private var ecommerceList = MutableLiveData<ArrayList<Ecommerce>>()
 
-    override fun getEcommerces(myCategory: String): ArrayList<Ecommerce> {
+    override fun callEcommerces(myCategory: String) {
 
-        val ecommerceList = ArrayList<Ecommerce>() //Inicializo
+        val parseList = ArrayList<Ecommerce>() //Inicializo
 
         ApiAdapter().api?.getAllEcommerces()?.enqueue(object : Callback<List<Ecommerce>> {
 
@@ -27,7 +27,7 @@ class EcommerceRepositoryImpl : EcommerceRepository {
 
                 for (i in 0 until comercios?.size!!) {
                     if (myCategory == (comercios[i].category.toString())) {
-                        ecommerceList.add(
+                        parseList.add(
                             Ecommerce(
                                 comercios[i].shortDescription,
                                 comercios[i].name,
@@ -42,41 +42,21 @@ class EcommerceRepositoryImpl : EcommerceRepository {
                         )
                     }
                 }
+                ecommerceList.value = parseList
             }
 
             override fun onFailure(call: Call<List<Ecommerce>>?, t: Throwable?) {
                 t?.printStackTrace()
             }
         })
-        return ecommerceList
     }
 
-    override fun getCategoriesList(): List<String>? {
-
-        parseCategoriesList()
-
-
-        if (categoriesList == null && parseCategoriesFinished != "ERROR") {
-            val runnable = Runnable {
-                getCategoriesList()
-                Log.d("Esperando", " ...")
-            }
-            val handler = Handler()
-            handler.postDelayed(runnable, 2000)
-        }
-
-        Log.d("Categorias get ", categoriesList.toString())
-        return categoriesList
-
-    }
-
-    fun parseCategoriesList() {
+    override fun callCategoriesList() {
 
         val categories = mutableListOf<String>()
-        //val categoriesList = ArrayList<String>() //Inicializo
+        val currentCall: Call<List<Ecommerce>>? = ApiAdapter().api?.getAllEcommerces()
 
-
-        ApiAdapter().api?.getAllEcommerces()?.enqueue(object : Callback<List<Ecommerce>> {
+        currentCall?.enqueue(object : Callback<List<Ecommerce>> {
 
             override fun onResponse(
                 call: Call<List<Ecommerce>>?,
@@ -85,25 +65,29 @@ class EcommerceRepositoryImpl : EcommerceRepository {
 
                 if (response?.isSuccessful!!) {
                     val comercios = response.body()
-                    //  val categories= mutableListOf<String>()
 
                     for (i in 0 until comercios?.size!!) {
-                        //categoriesList[i].add(comercios[i].category.toString())
-                        categories.add(comercios[i].category.toString())
-
+                        if (comercios[i].category.toString() != "null") {
+                            categories.add(comercios[i].category.toString())
+                        }
                     }
 
-                    categoriesList = categories.distinct()
-                    parseCategoriesFinished = "OK"
-                } else {
-                    parseCategoriesFinished = "ERROR"
+                    categoriesList.value = categories.distinct()
+                    Log.d("callCategoriesList", categoriesList.value.toString())
                 }
             }
 
             override fun onFailure(call: Call<List<Ecommerce>>?, t: Throwable?) {
                 t?.printStackTrace()
-                parseCategoriesFinished = "ERROR"
             }
         })
+    }
+
+    override fun getCategoriesList(): MutableLiveData<List<String>> {
+        return categoriesList
+    }
+
+    override fun getEcommerces(): MutableLiveData<ArrayList<Ecommerce>> {
+        return ecommerceList
     }
 }

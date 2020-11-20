@@ -1,7 +1,11 @@
 package antoniomy82.ecommerce.model
 
+import androidx.lifecycle.MutableLiveData
+
 interface EcommerceRepository {
 
-    fun getEcommerces(myCategory: String): ArrayList<Ecommerce>
-    fun getCategoriesList(): List<String>?
+    fun callEcommerces(myCategory: String)
+    fun callCategoriesList()
+    fun getCategoriesList(): MutableLiveData<List<String>>
+    fun getEcommerces(): MutableLiveData<ArrayList<Ecommerce>>
 }

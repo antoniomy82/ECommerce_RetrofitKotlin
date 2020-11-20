@@ -1,5 +1,5 @@
 
-package antoniomy82.ecommerce.view
+package antoniomy82.ecommerce.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -44,7 +44,9 @@ class DetailActivity : AppCompatActivity() {
         val tvDemail: TextView? = findViewById(R.id.tv_Demail)
         val tvDtelefono: TextView? = findViewById(R.id.tv_Dtelefono)
 
-        this.miEcommerce = EcommerceViewModel.getEcommerce(intent.getIntExtra("miIndice", 0))
+        this.miEcommerce =
+            EcommerceViewModel.getEcommerceCompanion(intent.getIntExtra("miIndice", 0))
+
         val direccion: String =
             miEcommerce!!.address!!.street + ", " + miEcommerce!!.address!!.zip + " , " + miEcommerce!!.address!!.city + "," + miEcommerce!!.address!!.country
 

@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce.view
+package antoniomy82.ecommerce.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -21,9 +21,9 @@ class ResultActivity : AppCompatActivity() {
     private var adapter: RecyclerViewAdapter? = null
     private var manager: RecyclerView.LayoutManager? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_result)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
@@ -38,7 +38,8 @@ class ResultActivity : AppCompatActivity() {
             findViewById(R.id.rvCategory) //Aquí definimos dónde tenemos la vista del recyclerView XML
         recyclerView?.layoutManager = manager
 
-        adapter = RecyclerViewAdapter(this, EcommerceViewModel.getEcommerceList())
+
+        adapter = RecyclerViewAdapter(this, EcommerceViewModel.getEcommercesListCompanion())
         recyclerView?.adapter = adapter
 
     }

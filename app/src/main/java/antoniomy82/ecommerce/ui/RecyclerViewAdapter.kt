@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce.view
+package antoniomy82.ecommerce.ui
 
 import android.content.Context
 import android.content.Intent
@@ -18,14 +18,15 @@ import antoniomy82.ecommerce.model.Ecommerce
  *  email: antoniomy82@gmail.com
  */
 
-class RecyclerViewAdapter(var context: Context, listaItems: ArrayList<Ecommerce>?) :
+class RecyclerViewAdapter(var context: Context, ecommercesList: ArrayList<Ecommerce>) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
-    var listaComercios: ArrayList<Ecommerce>? = null
+    var ecommercesList: ArrayList<Ecommerce>? = null
 
     init {
-        this.listaComercios = listaItems
+        this.ecommercesList = ecommercesList
     }
+
 
     //Aquí es dónde vamos a crear o inflar la vista
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,7 +42,7 @@ class RecyclerViewAdapter(var context: Context, listaItems: ArrayList<Ecommerce>
 
     //Asignamos los datos a cada elemento de la lista
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val ecommerce = listaComercios?.get(position) // Cargamos los elementos
+        val ecommerce = ecommercesList?.get(position) // Cargamos los elementos
         val miViewHolder = holder as ViewHolder?
 
         val direccion: String =
@@ -87,7 +88,8 @@ class RecyclerViewAdapter(var context: Context, listaItems: ArrayList<Ecommerce>
     }
 
     override fun getItemCount(): Int {
-        return listaComercios!!.size
+
+        return ecommercesList?.size ?: 0
     }
 
 
