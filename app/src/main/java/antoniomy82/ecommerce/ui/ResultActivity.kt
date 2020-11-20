@@ -1,4 +1,4 @@
-package antoniomy82.ecommerce.view
+package antoniomy82.ecommerce.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

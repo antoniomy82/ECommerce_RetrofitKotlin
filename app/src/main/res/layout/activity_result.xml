@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="antoniomy82.ecommerce.view.ResultActivity">
+    tools:context="antoniomy82.ecommerce.ui.ResultActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_main"

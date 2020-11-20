@@ -22,15 +22,15 @@ import antoniomy82.ecommerce.databinding.ActivityMainBinding
 import antoniomy82.ecommerce.model.Ecommerce
 import antoniomy82.ecommerce.model.EcommerceRepository
 import antoniomy82.ecommerce.model.EcommerceRepositoryImpl
+import antoniomy82.ecommerce.ui.ResultActivity
 import antoniomy82.ecommerce.utils.GPSTracker
-import antoniomy82.ecommerce.view.ResultActivity
 
 class EcommerceViewModel : ViewModel() {
 
     private var context: Context? = null
     var activityMainBinding: ActivityMainBinding? = null
     private var activity: Activity? = null
-    private var categoriesList: List<String>? = listOf("..")
+    private var categoriesList: List<String>? = listOf()
     private var spAdapter: ArrayAdapter<String>? = null
 
 
@@ -45,32 +45,14 @@ class EcommerceViewModel : ViewModel() {
 
         activityMainBinding.btResultado.visibility = View.GONE
 
-        if (getCategoriesList() != null) {
-            loading()
-        } else {
-            val runnable = Runnable {
-                loading()
-                Log.d("Esperando", " ...")
-            }
-            val handler = Handler()
-            handler.postDelayed(runnable, 4000)
-        }
-        /*
-        A partir de aquí bindearlo y hacer que coja las categorias automaticamente.
-         */
+        loadSpinnerData()
+        spinnerCategories()
+    }
 
-        spAdapter = context?.let {
-            ArrayAdapter(
-                it,
-                android.R.layout.simple_spinner_item,
-                categoriesList!!
-            )
-        }
-        activityMainBinding.spCategory.adapter = spAdapter
+    private fun spinnerCategories() {
+        //Spinner Categoria val myList = context?.resources?.getStringArray(R.array.Categories)
 
-        //Spinner Categoria
-
-        activityMainBinding.spCategory.onItemSelectedListener =
+        activityMainBinding?.spCategory?.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
 
                 override fun onItemSelected(
@@ -80,13 +62,13 @@ class EcommerceViewModel : ViewModel() {
                     id: Long
                 ) {
 
+                    activityMainBinding?.edDireccion?.setText(R.string.aviso_gps)
 
-                    activityMainBinding.edDireccion.setText(R.string.aviso_gps)
-
-                    getRetrofitEcommerceList(
-                        (categoriesList?.get(position) ?: 0).toString()
-                    ) //Realizo el parseo ***
-
+                    if (categoriesList != null) {
+                        getRetrofitEcommerceList(
+                            (categoriesList?.get(position) ?: 0).toString()
+                        ) //Realizo el parseo ***
+                    }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -95,18 +77,17 @@ class EcommerceViewModel : ViewModel() {
 
                 }
             }
-
-
     }
 
+    private fun loadSpinnerData() {
 
-    fun loading() {
         activityMainBinding?.progressBar?.visibility = View.VISIBLE
         activityMainBinding?.tvLoad?.visibility = View.VISIBLE
 
-
         val mydinamiList = getCategoriesList()
+
         if (mydinamiList != null) {
+
             categoriesList = mydinamiList
             spAdapter = context?.let {
                 ArrayAdapter(
@@ -116,12 +97,18 @@ class EcommerceViewModel : ViewModel() {
                 )
             }
             activityMainBinding?.spCategory?.adapter = spAdapter
-
             activityMainBinding?.progressBar?.visibility = View.GONE
             activityMainBinding?.tvLoad?.visibility = View.GONE
 
+            Log.d("isNotEmpty", "LoadSpinnerCategories")
+        } else {
+            val runnable = Runnable {
+                loadSpinnerData()
+                Log.d("Esperando", " @@ runable EcommerceViewModel")
+            }
+            val handler = Handler()
+            handler.postDelayed(runnable, 3000)
         }
-
     }
 
 
@@ -145,12 +132,11 @@ class EcommerceViewModel : ViewModel() {
         }
 
 
-        fun getMiDireccion(): String? {
+        fun getMyAddress(): String? {
             return myAddress
         }
 
 
-        //Función que recibe todos los eCommercios que coincidan con la categoría seleccionada
         fun getRetrofitEcommerceList(myCategory: String) {
             this.ecommerceList = ecommerceRepository.getEcommerces(myCategory)
         }
@@ -158,6 +144,7 @@ class EcommerceViewModel : ViewModel() {
         fun getCategoriesList(): List<String>? {
             return ecommerceRepository.getCategoriesList()
         }
+
 
         //Ordeno la lista de eComercios por la distancia con respecto a la ubicación del smartphone
         fun sortByDistance(miUbicacion: Location) {
@@ -252,8 +239,10 @@ class EcommerceViewModel : ViewModel() {
             //Otra opción de Binding con una etiqueta String en el XML
             //activityMainBinding?.setVariable(BR.labelAddress, getMiDireccion().toString())
 
-            activityMainBinding?.edDireccion?.setText(getMiDireccion().toString())
+            activityMainBinding?.edDireccion?.setText(getMyAddress().toString())
+
             activityMainBinding?.btResultado?.visibility = View.VISIBLE
+
 
         } else {
             dialogGpsOff()
@@ -271,8 +260,19 @@ class EcommerceViewModel : ViewModel() {
                 sortByDistance(it)
             }
 
-            val intent = Intent(activity, ResultActivity::class.java)
-            activity?.startActivity(intent)
+            activityMainBinding?.btResultado?.visibility = View.GONE
+            activityMainBinding?.progressBar?.visibility = View.VISIBLE
+            activityMainBinding?.tvLoad?.visibility = View.VISIBLE
+
+            val runnable = Runnable {
+                activityMainBinding?.progressBar?.visibility = View.GONE
+                activityMainBinding?.tvLoad?.visibility = View.GONE
+                val intent = Intent(activity, ResultActivity::class.java)
+                activity?.startActivity(intent)
+            }
+            val handler = Handler()
+            handler.postDelayed(runnable, 3000)
+
         }
     }
 

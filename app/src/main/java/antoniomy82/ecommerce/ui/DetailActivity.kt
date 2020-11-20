@@ -1,5 +1,5 @@
 
-package antoniomy82.ecommerce.view
+package antoniomy82.ecommerce.ui
 
 import android.content.Intent
 import android.net.Uri
