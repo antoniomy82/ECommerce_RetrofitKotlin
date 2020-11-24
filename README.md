@@ -1,13 +1,9 @@
 # eCommerce
 
 ## NOTA
-Esta App está en fase de desarrollo, queda pendiente reestructurar a MVVM correctamente.
-- Separar companion object de EcommerceViewModel, y dejarlo como modelo de datos (parcelable o serializable).
-- Quitar findbyId e utilizar Binding.
-- Sustituir null por let o ?:
-- Reubicar progress bar.
-- Crear la lista de categorias de forma dinámica.
-
+Esta App está en fase de desarrollo, queda pendiente reestructurar a MVVM correctamente:
+- Bindear Detaill Activity.
+- Refactorizar código.
 
 Descripción de la App:
 
