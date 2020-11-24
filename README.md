@@ -17,7 +17,6 @@ La idea es hacer una pequeña aplicación que consuma el resultado de una llamad
 La aplicación incluye las siguientes funcionalidades:
 - Los comercios deben poder filtrarse por categoría
 - Los comercios deben poder ordenarse por distancia al usuario
-- URL a consultar: http://prod.klikin.com/commerces/public
 
 Una vez se obtengan los resultados, cuando "cliquemos" en un registro de la lista:
 - Cargará la foto del logotipo de empresa
