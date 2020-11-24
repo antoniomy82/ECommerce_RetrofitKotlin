@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.location.Location
 import android.os.Handler
 import android.os.Looper
@@ -158,14 +159,28 @@ class EcommerceViewModel : ViewModel() {
         if (gps.gpsIsActive()) {
             myLocation = gps.getLocation()
 
+            activityMainBinding?.progressBar?.visibility = View.VISIBLE
+            activityMainBinding?.tvLoad?.setTextColor(Color.parseColor("#0492C2"))
+            activityMainBinding?.tvLoad?.text = "Obteniendo localización GPS"
+            activityMainBinding?.tvLoad?.visibility = View.VISIBLE
+
             if (myLocation != null) {
                 myAddress =
                     gps.getAddressFromLocation(myLocation!!.latitude, myLocation!!.longitude)
                 //Otra opción de Binding con una etiqueta String en el XML
                 //activityMainBinding?.setVariable(BR.labelAddress, getMiDireccion().toString())
-                activityMainBinding?.edDireccion?.setText(myAddress.toString())
-                activityMainBinding?.btResultado?.visibility = View.VISIBLE
+                val runnable = Runnable {
+                    activityMainBinding?.edDireccion?.setText(myAddress.toString())
+                    activityMainBinding?.btResultado?.visibility = View.VISIBLE
+                    activityMainBinding?.progressBar?.visibility = View.GONE
+                    activityMainBinding?.tvLoad?.visibility = View.GONE
+                }
+                val handler = Handler(Looper.getMainLooper())
+                handler.postDelayed(runnable, 1000)
+            } else {
+                onClickGPS()
             }
+
         } else {
             Toast.makeText(context, "GPS APAGADO", Toast.LENGTH_LONG).show()
             dialogGpsOff()
@@ -185,6 +200,8 @@ class EcommerceViewModel : ViewModel() {
             activityMainBinding?.btResultado?.visibility = View.GONE
             activityMainBinding?.progressBar?.visibility = View.VISIBLE
             activityMainBinding?.tvLoad?.visibility = View.VISIBLE
+            activityMainBinding?.tvLoad?.setTextColor(Color.parseColor("#D50000"))
+            activityMainBinding?.tvLoad?.text = "Calculando eCommercios Próximos"
 
 
             val runnable = Runnable {
