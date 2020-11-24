@@ -141,11 +141,6 @@ class EcommerceViewModel : ViewModel() {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             activity?.startActivity(intent)
 
-            val runnable = Runnable {
-                myLocation = gps.getLocation()
-            }
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed(runnable, 5000)
         }
             .setNegativeButton("Dirección por defecto ") { _, _ ->
                 myAddress = "Puerta del Sol, 28013, Madrid, Spain"
@@ -163,7 +158,7 @@ class EcommerceViewModel : ViewModel() {
         if (gps.gpsIsActive()) {
             myLocation = gps.getLocation()
 
-            myLocation.let {
+            if (myLocation != null) {
                 myAddress =
                     gps.getAddressFromLocation(myLocation!!.latitude, myLocation!!.longitude)
                 //Otra opción de Binding con una etiqueta String en el XML
