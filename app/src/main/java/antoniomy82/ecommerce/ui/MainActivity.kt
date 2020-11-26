@@ -17,12 +17,11 @@ import antoniomy82.ecommerce.viewmodel.EcommerceViewModel
  *  Likedin: https://www.linkedin.com/in/antonio-javiermorales-yáñez-85a96b137/
  *  email: antoniomy82@gmail.com
  */
-
-//Clase que funciona como controlador del proyecto
 class MainActivity : AppCompatActivity() {
 
     private var ecommerceViewModel: EcommerceViewModel? = null
     private var dataBinding: ActivityMainBinding? = null
+    private var lastSelected: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +42,11 @@ class MainActivity : AppCompatActivity() {
         //Asigno LiveData al modelo del binding
         dataBinding?.model = ecommerceViewModel  //SetModel
 
+        if (savedInstanceState != null) {
+            this.lastSelected = savedInstanceState.getInt("positionSpinner", 0)
+        }
+
+
         setupMainBinding()
     }
 
@@ -56,15 +60,19 @@ class MainActivity : AppCompatActivity() {
             )
         } //Paso el contexto y el binding de activity Main
 
-        ecommerceViewModel?.setSpinnerCategories()
-
         //LiveData
-        ecommerceViewModel?.callCategoriesList()
+        if (lastSelected == 0) { //Caso base
+            ecommerceViewModel?.callCategoriesList()
+            dataBinding?.btResultado?.visibility = View.GONE
+        }
 
         //Actualizo el contenido de spinner
         ecommerceViewModel?.getCategoriesList()?.observe(this, { categoriesList ->
-            val spinnerCategory =
-                ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
+            val spinnerCategory = ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_item,
+                categoriesList
+            )
             dataBinding?.spCategory?.adapter = spinnerCategory
 
             dataBinding?.progressBar?.visibility = View.GONE
@@ -78,5 +86,17 @@ class MainActivity : AppCompatActivity() {
             EcommerceViewModel.setEcommercesListCompanion(ecommerceList)
             ecommerceViewModel?.setEcommercesList(ecommerceList)
         })
+
+        ecommerceViewModel?.setSpinnerCategories()
+        dataBinding?.spCategory?.setSelection(lastSelected)  //last selected category into Spinner (Used to Portrait/Landscape)
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        dataBinding?.spCategory?.selectedItemPosition?.let {
+            outState.putInt("positionSpinner", it)
+        }
     }
 }

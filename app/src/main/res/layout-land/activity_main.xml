@@ -113,7 +113,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/bt_resultado" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/edDireccion"
                         android:layout_width="277dp"
                         android:layout_height="38dp"
@@ -121,7 +121,6 @@
                         android:autofillHints=""
                         android:ems="10"
                         android:hint="@string/aviso_gps"
-                        android:inputType="textPostalAddress"
                         android:singleLine="true"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
