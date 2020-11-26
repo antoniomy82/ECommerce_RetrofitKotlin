@@ -43,4 +43,5 @@ class ResultActivity : AppCompatActivity() {
         recyclerView?.adapter = adapter
 
     }
+
 }

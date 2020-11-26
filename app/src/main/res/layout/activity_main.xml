@@ -63,6 +63,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_Bienvenido" />
 
         <!-- android:entries="@array/Categories" -->
+        <!--android:entries="@{model.categoriesList}" -->
         <Spinner
             android:id="@+id/sp_category"
             android:layout_width="149dp"
@@ -71,7 +72,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            android:entries="@{model.categoriesList}"
             app:layout_constraintTop_toBottomOf="@+id/tv_SelectCategory" />
 
         <Button
@@ -99,14 +99,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bt_resultado" />
 
-        <EditText
+        <TextView
             android:id="@+id/edDireccion"
             android:layout_width="277dp"
             android:layout_height="38dp"
             android:layout_marginTop="20dp"
             android:ems="10"
             android:hint="@string/aviso_gps"
-            android:inputType="textPostalAddress"
             android:singleLine="true"
             android:text="@{model.myAddress}"
             android:textSize="14sp"

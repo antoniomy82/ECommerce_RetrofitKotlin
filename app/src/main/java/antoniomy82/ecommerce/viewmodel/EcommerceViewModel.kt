@@ -32,9 +32,7 @@ class EcommerceViewModel : ViewModel() {
 
     private var myLocation: Location? = null
     private var myAddress = MutableLiveData<String>()
-    private var selectedCategory = MutableLiveData<String>()
     private var gps = GPSTracker()
-
 
     companion object {
         private var myEcommerces = ArrayList<Ecommerce>()
@@ -92,16 +90,12 @@ class EcommerceViewModel : ViewModel() {
 
         gps = GPSTracker(myContext, activity)
 
-        if (myAddress.value.toString() == "") {
-            activityMainBinding.btResultado.visibility = View.GONE
-        } else {
-            activityMainBinding.btResultado.visibility = View.VISIBLE
-        }
     }
 
 
     fun setSpinnerCategories() {
         //Spinner Categoria val myList = context?.resources?.getStringArray(R.array.Categories)
+
         binding?.spCategory?.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
 
@@ -111,18 +105,14 @@ class EcommerceViewModel : ViewModel() {
                     position: Int,
                     id: Long
                 ) {
+
                     if (categoriesList != null) {
                         callEcommerceList(categoriesList!![position])
-                        selectedCategory.value = categoriesList!![position]
                     }
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    if (selectedCategory.value.toString().isNotBlank()) {
-                        callEcommerceList(selectedCategory.value.toString()) //Realizo el parseo
-                    } else {
-                        callEcommerceList(categoriesList!![0])
-                    }
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    TODO("Not yet implemented")
                 }
             }
     }
@@ -136,9 +126,12 @@ class EcommerceViewModel : ViewModel() {
                 ecommerceList[i].distance =
                     (miUbicacion.distanceTo(ecommerceList[i].myLocation).div(1000))
             }
+            println("For Terminado")
         }
 
         ecommerceList.sortBy { it.distance }  //Ordeno el ArrayList por distance
+
+
     }
 
 
@@ -159,7 +152,8 @@ class EcommerceViewModel : ViewModel() {
                 myAddress.value = "Puerta del Sol, 28013, Madrid, Spain"
                 myLocation = gps.getLocationFromAddress(myAddress.value.toString())
                 binding?.apply {
-                    edDireccion.setText(myAddress.value.toString())
+                    edDireccion.text = myAddress.value.toString()
+                    //edDireccion.setText(myAddress.value.toString())
                     btResultado.visibility = View.VISIBLE
                 }
             }
@@ -179,12 +173,16 @@ class EcommerceViewModel : ViewModel() {
             binding?.tvLoad?.visibility = View.VISIBLE
 
             if (myLocation != null) {
-                myAddress.value =
-                    gps.getAddressFromLocation(myLocation!!.latitude, myLocation!!.longitude)
+                myAddress.value = myLocation?.longitude?.let {
+                    myLocation?.latitude?.let { it1 ->
+                        gps.getAddressFromLocation(it1, it)
+                    }
+                }
                 //Otra opción de Binding con una etiqueta String en el XML
                 //activityMainBinding?.setVariable(BR.labelAddress, getMiDireccion().toString())
                 val runnable = Runnable {
-                    binding?.edDireccion?.setText(myAddress.value.toString())
+                    binding?.edDireccion?.text = myAddress.value.toString()
+                    //binding?.edDireccion?.setText(myAddress.value.toString())
                     binding?.btResultado?.visibility = View.VISIBLE
                     binding?.progressBar?.visibility = View.GONE
                     binding?.tvLoad?.visibility = View.GONE
@@ -204,29 +202,27 @@ class EcommerceViewModel : ViewModel() {
     //Botón que muestra resultados
     fun onClickResult() {
 
-        if (myLocation == null) {
-            //binding?.edDireccion?.setText(R.string.aviso_gps)
-        } else {
-            myLocation?.let {
-                sortByDistance(it)
-            }
+        myLocation?.let {
+            sortByDistance(it)
+        }
 
-            binding?.btResultado?.visibility = View.GONE
             binding?.progressBar?.visibility = View.VISIBLE
             binding?.tvLoad?.visibility = View.VISIBLE
             binding?.tvLoad?.setTextColor(Color.parseColor("#D50000"))
             binding?.tvLoad?.text = "Calculando eCommercios Próximos"
 
-
             val runnable = Runnable {
-                binding?.progressBar?.visibility = View.GONE
-                binding?.tvLoad?.visibility = View.GONE
-                val intent = Intent(activity, ResultActivity::class.java)
-                activity?.startActivity(intent)
+                if (ecommerceList[0].distance == null) {
+                    onClickResult()
+                } else {
+                    binding?.progressBar?.visibility = View.GONE
+                    binding?.tvLoad?.visibility = View.GONE
+                    val intent = Intent(activity, ResultActivity::class.java)
+                    activity?.startActivity(intent)
+                }
             }
             val handler = Handler(Looper.getMainLooper())
             handler.postDelayed(runnable, 1000)
-        }
     }
 
 }
