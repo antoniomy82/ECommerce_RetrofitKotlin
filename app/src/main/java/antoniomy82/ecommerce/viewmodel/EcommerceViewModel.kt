@@ -14,7 +14,6 @@ import android.widget.AdapterView
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import antoniomy82.ecommerce.R
 import antoniomy82.ecommerce.databinding.ActivityMainBinding
 import antoniomy82.ecommerce.model.Ecommerce
 import antoniomy82.ecommerce.model.EcommerceObservable
@@ -28,12 +27,14 @@ class EcommerceViewModel : ViewModel() {
     private var categoriesList: List<String>? = null //Observable
     private var ecommerceList = ArrayList<Ecommerce>() //Observable
 
-    var activityMainBinding: ActivityMainBinding? = null
+    var binding: ActivityMainBinding? = null
     private var ecommerceObservable: EcommerceObservable = EcommerceObservable()
 
     private var myLocation: Location? = null
-    private var myAddress: String? = null
+    private var myAddress = MutableLiveData<String>()
+    private var selectedCategory = MutableLiveData<String>()
     private var gps = GPSTracker()
+
 
     companion object {
         private var myEcommerces = ArrayList<Ecommerce>()
@@ -76,6 +77,10 @@ class EcommerceViewModel : ViewModel() {
     }
 
 
+    fun getMyAddress(): MutableLiveData<String> {
+        return myAddress
+    }
+
     fun setMainActivityContextBinding(
         myContext: Context,
         activity: Activity?,
@@ -83,19 +88,21 @@ class EcommerceViewModel : ViewModel() {
     ) {
         this.context = myContext
         this.activity = activity
-        this.activityMainBinding = activityMainBinding
+        this.binding = activityMainBinding
 
         gps = GPSTracker(myContext, activity)
-        activityMainBinding.btResultado.visibility = View.GONE
 
-        spinnerCategories()
+        if (myAddress.value.toString() == "") {
+            activityMainBinding.btResultado.visibility = View.GONE
+        } else {
+            activityMainBinding.btResultado.visibility = View.VISIBLE
+        }
     }
 
 
-    private fun spinnerCategories() {
+    fun setSpinnerCategories() {
         //Spinner Categoria val myList = context?.resources?.getStringArray(R.array.Categories)
-
-        activityMainBinding?.spCategory?.onItemSelectedListener =
+        binding?.spCategory?.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
 
                 override fun onItemSelected(
@@ -104,14 +111,18 @@ class EcommerceViewModel : ViewModel() {
                     position: Int,
                     id: Long
                 ) {
-
-                    activityMainBinding?.edDireccion?.setText(R.string.aviso_gps)
-                    if (categoriesList != null) callEcommerceList(categoriesList!![position])
+                    if (categoriesList != null) {
+                        callEcommerceList(categoriesList!![position])
+                        selectedCategory.value = categoriesList!![position]
+                    }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
-                    callEcommerceList(categoriesList!![0]) //Realizo el parseo
-
+                    if (selectedCategory.value.toString().isNotBlank()) {
+                        callEcommerceList(selectedCategory.value.toString()) //Realizo el parseo
+                    } else {
+                        callEcommerceList(categoriesList!![0])
+                    }
                 }
             }
     }
@@ -144,10 +155,13 @@ class EcommerceViewModel : ViewModel() {
 
         }
             .setNegativeButton("Dirección por defecto ") { _, _ ->
-                myAddress = "Puerta del Sol, 28013, Madrid, Spain"
-                myLocation = gps.getLocationFromAddress(myAddress!!)
-                activityMainBinding?.edDireccion?.setText(myAddress)
-                activityMainBinding?.btResultado?.visibility = View.VISIBLE
+
+                myAddress.value = "Puerta del Sol, 28013, Madrid, Spain"
+                myLocation = gps.getLocationFromAddress(myAddress.value.toString())
+                binding?.apply {
+                    edDireccion.setText(myAddress.value.toString())
+                    btResultado.visibility = View.VISIBLE
+                }
             }
         val alert = dialog.create()
         alert.show()
@@ -159,21 +173,21 @@ class EcommerceViewModel : ViewModel() {
         if (gps.gpsIsActive()) {
             myLocation = gps.getLocation()
 
-            activityMainBinding?.progressBar?.visibility = View.VISIBLE
-            activityMainBinding?.tvLoad?.setTextColor(Color.parseColor("#0492C2"))
-            activityMainBinding?.tvLoad?.text = "Obteniendo localización GPS"
-            activityMainBinding?.tvLoad?.visibility = View.VISIBLE
+            binding?.progressBar?.visibility = View.VISIBLE
+            binding?.tvLoad?.setTextColor(Color.parseColor("#0492C2"))
+            binding?.tvLoad?.text = "Obteniendo localización GPS"
+            binding?.tvLoad?.visibility = View.VISIBLE
 
             if (myLocation != null) {
-                myAddress =
+                myAddress.value =
                     gps.getAddressFromLocation(myLocation!!.latitude, myLocation!!.longitude)
                 //Otra opción de Binding con una etiqueta String en el XML
                 //activityMainBinding?.setVariable(BR.labelAddress, getMiDireccion().toString())
                 val runnable = Runnable {
-                    activityMainBinding?.edDireccion?.setText(myAddress.toString())
-                    activityMainBinding?.btResultado?.visibility = View.VISIBLE
-                    activityMainBinding?.progressBar?.visibility = View.GONE
-                    activityMainBinding?.tvLoad?.visibility = View.GONE
+                    binding?.edDireccion?.setText(myAddress.value.toString())
+                    binding?.btResultado?.visibility = View.VISIBLE
+                    binding?.progressBar?.visibility = View.GONE
+                    binding?.tvLoad?.visibility = View.GONE
                 }
                 val handler = Handler(Looper.getMainLooper())
                 handler.postDelayed(runnable, 1000)
@@ -191,22 +205,22 @@ class EcommerceViewModel : ViewModel() {
     fun onClickResult() {
 
         if (myLocation == null) {
-            activityMainBinding?.edDireccion?.setText(R.string.aviso_gps)
+            //binding?.edDireccion?.setText(R.string.aviso_gps)
         } else {
             myLocation?.let {
                 sortByDistance(it)
             }
 
-            activityMainBinding?.btResultado?.visibility = View.GONE
-            activityMainBinding?.progressBar?.visibility = View.VISIBLE
-            activityMainBinding?.tvLoad?.visibility = View.VISIBLE
-            activityMainBinding?.tvLoad?.setTextColor(Color.parseColor("#D50000"))
-            activityMainBinding?.tvLoad?.text = "Calculando eCommercios Próximos"
+            binding?.btResultado?.visibility = View.GONE
+            binding?.progressBar?.visibility = View.VISIBLE
+            binding?.tvLoad?.visibility = View.VISIBLE
+            binding?.tvLoad?.setTextColor(Color.parseColor("#D50000"))
+            binding?.tvLoad?.text = "Calculando eCommercios Próximos"
 
 
             val runnable = Runnable {
-                activityMainBinding?.progressBar?.visibility = View.GONE
-                activityMainBinding?.tvLoad?.visibility = View.GONE
+                binding?.progressBar?.visibility = View.GONE
+                binding?.tvLoad?.visibility = View.GONE
                 val intent = Intent(activity, ResultActivity::class.java)
                 activity?.startActivity(intent)
             }

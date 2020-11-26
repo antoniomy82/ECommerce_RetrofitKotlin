@@ -23,7 +23,6 @@
     <string name="aviso_gps">"Pulse icono GPS y obtenga su dirección"</string>
     <string name="im_Demail">Enviar email</string>
     <string name="im_Dtelefono">Llamar por telefono</string>
-    <string name="ed_L_GPS">Pulse botón GPS (debajo) para obtener dirección</string>
     <string name="tv_LabelDnombre">NOMBRE e-COMERCIO</string>
     <string name="tv_LabelDdescShort">DESCRIPCIÓN</string>
     <string name="tv_LabelDdireccion">DIRECCIÓN</string>

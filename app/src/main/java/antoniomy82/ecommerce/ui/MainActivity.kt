@@ -22,20 +22,14 @@ import antoniomy82.ecommerce.viewmodel.EcommerceViewModel
 class MainActivity : AppCompatActivity() {
 
     private var ecommerceViewModel: EcommerceViewModel? = null
+    private var dataBinding: ActivityMainBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //Creo el bindeo
-        val activityMainBinding: ActivityMainBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setContentView(activityMainBinding.root) //Asigno el contenido a la vista, osea el Binding
-
-        //Creo liveData
-        ecommerceViewModel = ViewModelProvider(this).get(EcommerceViewModel::class.java)
-
-        //Asigno Lifedata al modelo del binding
-        activityMainBinding.model = ecommerceViewModel  //SetModel
+        dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setContentView(dataBinding?.root) //Asigno el contenido a la vista, osea el Binding
 
         //Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar_main)
@@ -43,27 +37,38 @@ class MainActivity : AppCompatActivity() {
         toolbar.setLogo(R.drawable.ico_personal)
         setSupportActionBar(toolbar)
 
-        setupMainBinding(activityMainBinding)
+        //Creo liveData
+        ecommerceViewModel = ViewModelProvider(this).get(EcommerceViewModel::class.java)
+
+        //Asigno LiveData al modelo del binding
+        dataBinding?.model = ecommerceViewModel  //SetModel
+
+        setupMainBinding()
     }
 
-    private fun setupMainBinding(activityMainBinding: ActivityMainBinding) {
+    private fun setupMainBinding() {
 
-        ecommerceViewModel?.setMainActivityContextBinding(
-            applicationContext,
-            this,
-            activityMainBinding
-        ) //Paso el contexto y el binding a activity Main
+        dataBinding?.let {
+            ecommerceViewModel?.setMainActivityContextBinding(
+                applicationContext,
+                this,
+                it
+            )
+        } //Paso el contexto y el binding de activity Main
+
+        ecommerceViewModel?.setSpinnerCategories()
 
         //LiveData
         ecommerceViewModel?.callCategoriesList()
 
+        //Actualizo el contenido de spinner
         ecommerceViewModel?.getCategoriesList()?.observe(this, { categoriesList ->
             val spinnerCategory =
                 ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
-            activityMainBinding.spCategory.adapter = spinnerCategory
+            dataBinding?.spCategory?.adapter = spinnerCategory
 
-            activityMainBinding.progressBar.visibility = View.GONE
-            activityMainBinding.tvLoad.visibility = View.GONE
+            dataBinding?.progressBar?.visibility = View.GONE
+            dataBinding?.tvLoad?.visibility = View.GONE
 
             ecommerceViewModel?.setCategoriesList(categoriesList)
         })
@@ -74,5 +79,4 @@ class MainActivity : AppCompatActivity() {
             ecommerceViewModel?.setEcommercesList(ecommerceList)
         })
     }
-
 }

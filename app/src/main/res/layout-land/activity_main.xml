@@ -3,6 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <variable
+            name="model"
+            type="antoniomy82.ecommerce.viewmodel.EcommerceViewModel" />
+
+    </data>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -91,7 +99,8 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.505"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imGPS" />
+                        app:layout_constraintTop_toBottomOf="@+id/imGPS"
+                        android:onClick="@{()->model.onClickResult()}" />
 
                     <TextView
                         android:id="@+id/tvLoad"
@@ -111,14 +120,14 @@
                         android:layout_marginTop="10dp"
                         android:autofillHints=""
                         android:ems="10"
-                        android:hint="@string/ed_L_GPS"
+                        android:hint="@string/aviso_gps"
                         android:inputType="textPostalAddress"
                         android:singleLine="true"
-                        android:text="@string/edDireccion"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/sp_category" />
+                        app:layout_constraintTop_toBottomOf="@+id/sp_category"
+                        android:text="@{model.myAddress}" />
 
                     <ImageView
                         android:id="@+id/imGPS"
@@ -130,7 +139,8 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edDireccion"
-                        app:srcCompat="@drawable/im_location" />
+                        app:srcCompat="@drawable/im_location"
+                        android:onClick="@{()->model.onClickGPS()}" />
 
                     <ProgressBar
                         android:id="@+id/progressBar"
