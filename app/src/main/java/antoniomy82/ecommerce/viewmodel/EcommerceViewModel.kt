@@ -79,6 +79,7 @@ class EcommerceViewModel : ViewModel() {
         return myAddress
     }
 
+
     fun setMainActivityContextBinding(
         myContext: Context,
         activity: Activity?,
@@ -89,9 +90,15 @@ class EcommerceViewModel : ViewModel() {
         this.binding = activityMainBinding
 
         gps = GPSTracker(myContext, activity)
-
     }
 
+    fun startCategoriesLoad(selectedCategory: Int) {
+        //Caso inicial
+        if (selectedCategory == 99) { //Caso base
+            callCategoriesList()
+            binding?.btResultado?.visibility = View.GONE
+        }
+    }
 
     fun setSpinnerCategories() {
         //Spinner Categoria val myList = context?.resources?.getStringArray(R.array.Categories)

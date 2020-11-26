@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import antoniomy82.ecommerce.R
@@ -30,27 +29,24 @@ class MainActivity : AppCompatActivity() {
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setContentView(dataBinding?.root) //Asigno el contenido a la vista, osea el Binding
 
-        //Toolbar
-        val toolbar: Toolbar = findViewById(R.id.toolbar_main)
-        toolbar.title = "  eCommerce"
-        toolbar.setLogo(R.drawable.ico_personal)
-        setSupportActionBar(toolbar)
-
         //Creo liveData
         ecommerceViewModel = ViewModelProvider(this).get(EcommerceViewModel::class.java)
 
-        //Asigno LiveData al modelo del binding
-        dataBinding?.model = ecommerceViewModel  //SetModel
+        dataBinding?.model = ecommerceViewModel  //SetModel - asigno LiveData al modelo del binding
 
         if (savedInstanceState != null) {
             this.lastSelected = savedInstanceState.getInt("positionSpinner", 0)
         }
 
-
-        setupMainBinding()
+        setupBindingLiveData()
     }
 
-    private fun setupMainBinding() {
+    private fun setupBindingLiveData() {
+
+        //Toolbar
+        dataBinding?.toolbarMain?.title = "  eCommerce"
+        dataBinding?.toolbarMain?.setLogo(R.drawable.ico_personal)
+        setSupportActionBar(dataBinding?.toolbarMain)
 
         dataBinding?.let {
             ecommerceViewModel?.setMainActivityContextBinding(
@@ -60,11 +56,10 @@ class MainActivity : AppCompatActivity() {
             )
         } //Paso el contexto y el binding de activity Main
 
-        //LiveData
-        if (lastSelected == 99) { //Caso base
-            ecommerceViewModel?.callCategoriesList()
-            dataBinding?.btResultado?.visibility = View.GONE
-        }
+        ecommerceViewModel?.startCategoriesLoad(lastSelected)
+        /*
+            LiveData
+         */
 
         //Actualizo el contenido de spinner
         ecommerceViewModel?.getCategoriesList()?.observe(this, { categoriesList ->
