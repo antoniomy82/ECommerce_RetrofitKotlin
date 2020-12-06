@@ -88,7 +88,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imGPS"
-                android:onClick="@{()->main_vm.onClickResult()}" />
+                android:onClick="@{()->main_vm.btnShowEcommercesList()}" />
 
 
             <TextView
