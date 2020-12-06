@@ -1,12 +1,12 @@
 package antoniomy82.ecommerce.ui
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import antoniomy82.ecommerce.R
 import antoniomy82.ecommerce.model.Ecommerce
@@ -87,10 +87,19 @@ class RecyclerViewAdapter(mContext: Context) :
 
         //Listener cuando clicamos en un item.
         miViewHolder.itemView.setOnClickListener {
-            val intent =
-                Intent(mContext, DetailActivity::class.java) //Activity inicio, activity destino
+
             EcommerceViewModel.selectedEcommerce(position)
-            mContext?.startActivity(intent)
+            /*
+               val intent = Intent(mContext, DetailActivity::class.java) //Activity inicio, activity destino
+               mContext?.startActivity(intent)
+              */
+
+
+            //NavigationHost , si se hace la transición con esto, se queda el fragment anterior abierto, al usar como punto de partida activity_main
+            EcommerceViewModel.mNavHostView?.let {
+                Navigation.findNavController(it)
+                    .navigate(R.id.action_mainFragment_to_detailActivity32)
+            }
         }
 
     }

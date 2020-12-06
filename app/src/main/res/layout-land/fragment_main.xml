@@ -100,7 +100,7 @@
                         app:layout_constraintHorizontal_bias="0.505"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/imGPS"
-                        android:onClick="@{()->main_vm.onClickResult()}" />
+                        android:onClick="@{()->main_vm.btnShowEcommercesList()}" />
 
                     <TextView
                         android:id="@+id/tvLoad"

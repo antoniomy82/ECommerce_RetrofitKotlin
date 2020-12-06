@@ -14,6 +14,7 @@ import antoniomy82.ecommerce.R
 import antoniomy82.ecommerce.databinding.FragmentMainBinding
 import antoniomy82.ecommerce.viewmodel.EcommerceViewModel
 
+
 class MainFragment : Fragment() {
 
     private var ecommerceViewModel: EcommerceViewModel? = null

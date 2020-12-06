@@ -16,6 +16,7 @@ import android.widget.AdapterView
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.navigation.Navigation
 import antoniomy82.ecommerce.R
 import antoniomy82.ecommerce.databinding.ActivityDetailBinding
 import antoniomy82.ecommerce.databinding.FragmentMainBinding
@@ -28,8 +29,7 @@ import com.squareup.picasso.Picasso
 
 class EcommerceViewModel : ViewModel() {
 
-    private var mContextHome: Context? = null
-    private var mActivityHome: Activity? = null
+    private var mActivityMain: Activity? = null
     private var categoriesList: List<String>? = null //Observable
     private var ecommerceList = ArrayList<Ecommerce>() //Observable
 
@@ -46,10 +46,10 @@ class EcommerceViewModel : ViewModel() {
     private var mContextDetail: Context? = null
     private var thisEcommerce: Ecommerce? = null
 
-
     companion object {
         private var myEcommerces = ArrayList<Ecommerce>()
         private var myItem: Int = 0
+        var mNavHostView: View? = null
 
         fun getEcommercesListCompanion(): ArrayList<Ecommerce> {
             return myEcommerces
@@ -65,6 +65,10 @@ class EcommerceViewModel : ViewModel() {
 
         fun selectedEcommerce(position: Int) {
             this.myItem = position
+        }
+
+        fun getViewNavHost(): View? {
+            return mNavHostView
         }
 
     }
@@ -104,10 +108,9 @@ class EcommerceViewModel : ViewModel() {
         activity: Activity?,
         fragmentMainBinding: FragmentMainBinding?
     ) {
-        this.mActivityHome = activity
+        this.mActivityMain = activity
         this.fragmentMainBinding = fragmentMainBinding
         gps = GPSTracker(myContext, activity)
-
         //Toolbar
         fragmentMainBinding?.toolbarMain?.title = "  eCommerce"
         fragmentMainBinding?.toolbarMain?.setLogo(R.drawable.ico_personal)
@@ -158,20 +161,19 @@ class EcommerceViewModel : ViewModel() {
 
         ecommerceList.sortBy { it.distance }  //Ordeno el ArrayList por distance
 
-
     }
 
 
     //Dialog por si GPS está apagado
     private fun dialogGpsOff() {
-        val dialog = AlertDialog.Builder(mActivityHome)
+        val dialog = AlertDialog.Builder(mActivityMain)
         dialog.setCancelable(false)
         dialog.setTitle("GPS DESACTIVADO")
         dialog.setMessage("¿Desea activar GPS o usar dirección por defecto?")
 
         dialog.setPositiveButton("Activar GPS") { _, _ ->
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            mActivityHome?.startActivity(intent)
+            mActivityMain?.startActivity(intent)
 
         }
             .setNegativeButton("Dirección por defecto ") { _, _ ->
@@ -226,7 +228,7 @@ class EcommerceViewModel : ViewModel() {
     }
 
     //Botón que muestra resultados
-    fun onClickResult() {
+    fun btnShowEcommercesList() {
 
         myLocation?.let {
             sortByDistance(it)
@@ -239,15 +241,22 @@ class EcommerceViewModel : ViewModel() {
 
         val runnable = Runnable {
             if (ecommerceList[0].distance == null) {
-                onClickResult()
+                btnShowEcommercesList()
             } else {
                 fragmentMainBinding?.progressBar?.visibility = View.GONE
                 fragmentMainBinding?.tvLoad?.visibility = View.GONE
 
                 //Navigation Drawer
-                val intent = Intent(mActivityHome, ListActivity::class.java)
-                mActivityHome?.startActivity(intent)
+                val intent = Intent(mActivityMain, ListActivity::class.java)
+                mActivityMain?.startActivity(intent)
 
+                //Navigation Controller
+                mNavHostView = mActivityMain?.findViewById(R.id.nav_host_fragment)
+
+                mNavHostView?.let {
+                    Navigation.findNavController(it)
+                        .navigate(R.id.action_mainFragment_to_listActivity)
+                }
             }
         }
         val handler = Handler(Looper.getMainLooper())
