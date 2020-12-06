@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import antoniomy82.ecommerce.R
 import antoniomy82.ecommerce.model.Ecommerce
+import antoniomy82.ecommerce.viewmodel.EcommerceViewModel
+
 
 /**
  *  Creado por Antonio Javier Morales Yáñez on 24/08/2020
@@ -18,21 +20,26 @@ import antoniomy82.ecommerce.model.Ecommerce
  *  email: antoniomy82@gmail.com
  */
 
-class RecyclerViewAdapter(var context: Context, ecommercesList: ArrayList<Ecommerce>) :
+class RecyclerViewAdapter(mContext: Context) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
-    var ecommercesList: ArrayList<Ecommerce>? = null
+    var ecommercesList: ArrayList<Ecommerce>? = EcommerceViewModel.getEcommercesListCompanion()
+    var mContext: Context? = null
 
     init {
-        this.ecommercesList = ecommercesList
+        this.mContext = mContext
     }
 
 
     //Aquí es dónde vamos a crear o inflar la vista
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        val miContentView: View =
-            LayoutInflater.from(context).inflate(R.layout.recyclerview_item_lista, parent, false)
+
+        val miContentView: View = LayoutInflater.from(parent.context).inflate(
+            R.layout.recyclerview_item_lista,
+            parent,
+            false
+        )
 
         println("Create View Holder: $viewType")
 
@@ -56,10 +63,10 @@ class RecyclerViewAdapter(var context: Context, ecommercesList: ArrayList<Ecomme
         if (miViewHolder != null) {
             miViewHolder.tvNombre.text = ecommerce?.name
 
-            if (!direccion.isBlank()) {
+            if (direccion.isNotBlank()) {
                 miViewHolder.tvDireccion.text = direccion
             }
-            if (!distancia.isBlank()) {
+            if (distancia.isNotBlank()) {
                 miViewHolder.tvDistancia.text = distancia
             }
             if (!categoria.isNullOrBlank()) {
@@ -80,9 +87,10 @@ class RecyclerViewAdapter(var context: Context, ecommercesList: ArrayList<Ecomme
 
         //Listener cuando clicamos en un item.
         miViewHolder.itemView.setOnClickListener {
-            val intent = Intent(context, DetailActivity::class.java) //Activity inicio, activity destino
-            intent.putExtra("miIndice", position) //Envío la posición dentro de lista
-            context.startActivity(intent)
+            val intent =
+                Intent(mContext, DetailActivity::class.java) //Activity inicio, activity destino
+            EcommerceViewModel.selectedEcommerce(position)
+            mContext?.startActivity(intent)
         }
 
     }

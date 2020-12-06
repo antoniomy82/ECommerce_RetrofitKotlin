@@ -6,36 +6,50 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.location.Location
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.view.View
+import android.webkit.URLUtil
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import antoniomy82.ecommerce.databinding.ActivityMainBinding
+import antoniomy82.ecommerce.R
+import antoniomy82.ecommerce.databinding.ActivityDetailBinding
+import antoniomy82.ecommerce.databinding.FragmentMainBinding
 import antoniomy82.ecommerce.model.Ecommerce
 import antoniomy82.ecommerce.model.EcommerceObservable
-import antoniomy82.ecommerce.ui.ResultActivity
+import antoniomy82.ecommerce.ui.ListActivity
 import antoniomy82.ecommerce.utils.GPSTracker
+import com.squareup.picasso.Picasso
+
 
 class EcommerceViewModel : ViewModel() {
 
-    private var context: Context? = null
-    private var activity: Activity? = null
+    private var mContextHome: Context? = null
+    private var mActivityHome: Activity? = null
     private var categoriesList: List<String>? = null //Observable
     private var ecommerceList = ArrayList<Ecommerce>() //Observable
 
-    var binding: ActivityMainBinding? = null
+    var fragmentMainBinding: FragmentMainBinding? = null
+
+    var activityDetailBinding: ActivityDetailBinding? = null
+
     private var ecommerceObservable: EcommerceObservable = EcommerceObservable()
 
     private var myLocation: Location? = null
     private var myAddress = MutableLiveData<String>()
     private var gps = GPSTracker()
 
+    private var mContextDetail: Context? = null
+    private var thisEcommerce: Ecommerce? = null
+
+
     companion object {
         private var myEcommerces = ArrayList<Ecommerce>()
+        private var myItem: Int = 0
 
         fun getEcommercesListCompanion(): ArrayList<Ecommerce> {
             return myEcommerces
@@ -48,6 +62,11 @@ class EcommerceViewModel : ViewModel() {
         fun getEcommerceCompanion(position: Int): Ecommerce {
             return myEcommerces[position]
         }
+
+        fun selectedEcommerce(position: Int) {
+            this.myItem = position
+        }
+
     }
 
     fun callEcommerceList(myCategory: String) {
@@ -83,27 +102,28 @@ class EcommerceViewModel : ViewModel() {
     fun setMainActivityContextBinding(
         myContext: Context,
         activity: Activity?,
-        activityMainBinding: ActivityMainBinding
+        fragmentMainBinding: FragmentMainBinding?
     ) {
-        this.context = myContext
-        this.activity = activity
-        this.binding = activityMainBinding
-
+        this.mActivityHome = activity
+        this.fragmentMainBinding = fragmentMainBinding
         gps = GPSTracker(myContext, activity)
+
+        //Toolbar
+        fragmentMainBinding?.toolbarMain?.title = "  eCommerce"
+        fragmentMainBinding?.toolbarMain?.setLogo(R.drawable.ico_personal)
     }
+
 
     fun startCategoriesLoad(selectedCategory: Int) {
         //Caso inicial
         if (selectedCategory == 99) { //Caso base
             callCategoriesList()
-            binding?.btResultado?.visibility = View.GONE
+            fragmentMainBinding?.btResultado?.visibility = View.GONE
         }
     }
 
     fun setSpinnerCategories() {
-        //Spinner Categoria val myList = context?.resources?.getStringArray(R.array.Categories)
-
-        binding?.spCategory?.onItemSelectedListener =
+        fragmentMainBinding?.spCategory?.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
 
                 override fun onItemSelected(
@@ -144,21 +164,21 @@ class EcommerceViewModel : ViewModel() {
 
     //Dialog por si GPS está apagado
     private fun dialogGpsOff() {
-        val dialog = AlertDialog.Builder(activity)
+        val dialog = AlertDialog.Builder(mActivityHome)
         dialog.setCancelable(false)
         dialog.setTitle("GPS DESACTIVADO")
         dialog.setMessage("¿Desea activar GPS o usar dirección por defecto?")
 
         dialog.setPositiveButton("Activar GPS") { _, _ ->
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            activity?.startActivity(intent)
+            mActivityHome?.startActivity(intent)
 
         }
             .setNegativeButton("Dirección por defecto ") { _, _ ->
 
                 myAddress.value = "Puerta del Sol, 28013, Madrid, Spain"
                 myLocation = gps.getLocationFromAddress(myAddress.value.toString())
-                binding?.apply {
+                fragmentMainBinding?.apply {
                     edDireccion.text = myAddress.value.toString()
                     //edDireccion.setText(myAddress.value.toString())
                     btResultado.visibility = View.VISIBLE
@@ -174,10 +194,10 @@ class EcommerceViewModel : ViewModel() {
         if (gps.gpsIsActive()) {
             myLocation = gps.getLocation()
 
-            binding?.progressBar?.visibility = View.VISIBLE
-            binding?.tvLoad?.setTextColor(Color.parseColor("#0492C2"))
-            binding?.tvLoad?.text = "Obteniendo localización GPS"
-            binding?.tvLoad?.visibility = View.VISIBLE
+            fragmentMainBinding?.progressBar?.visibility = View.VISIBLE
+            fragmentMainBinding?.tvLoad?.setTextColor(Color.parseColor("#0492C2"))
+            fragmentMainBinding?.tvLoad?.text = "Obteniendo localización GPS"
+            fragmentMainBinding?.tvLoad?.visibility = View.VISIBLE
 
             if (myLocation != null) {
                 myAddress.value = myLocation?.longitude?.let {
@@ -188,11 +208,11 @@ class EcommerceViewModel : ViewModel() {
                 //Otra opción de Binding con una etiqueta String en el XML
                 //activityMainBinding?.setVariable(BR.labelAddress, getMiDireccion().toString())
                 val runnable = Runnable {
-                    binding?.edDireccion?.text = myAddress.value.toString()
+                    fragmentMainBinding?.edDireccion?.text = myAddress.value.toString()
                     //binding?.edDireccion?.setText(myAddress.value.toString())
-                    binding?.btResultado?.visibility = View.VISIBLE
-                    binding?.progressBar?.visibility = View.GONE
-                    binding?.tvLoad?.visibility = View.GONE
+                    fragmentMainBinding?.btResultado?.visibility = View.VISIBLE
+                    fragmentMainBinding?.progressBar?.visibility = View.GONE
+                    fragmentMainBinding?.tvLoad?.visibility = View.GONE
                 }
                 val handler = Handler(Looper.getMainLooper())
                 handler.postDelayed(runnable, 1000)
@@ -201,7 +221,6 @@ class EcommerceViewModel : ViewModel() {
             }
 
         } else {
-            Toast.makeText(context, "GPS APAGADO", Toast.LENGTH_LONG).show()
             dialogGpsOff()
         }
     }
@@ -213,23 +232,144 @@ class EcommerceViewModel : ViewModel() {
             sortByDistance(it)
         }
 
-            binding?.progressBar?.visibility = View.VISIBLE
-            binding?.tvLoad?.visibility = View.VISIBLE
-            binding?.tvLoad?.setTextColor(Color.parseColor("#D50000"))
-            binding?.tvLoad?.text = "Calculando eCommercios Próximos"
+        fragmentMainBinding?.progressBar?.visibility = View.VISIBLE
+        fragmentMainBinding?.tvLoad?.visibility = View.VISIBLE
+        fragmentMainBinding?.tvLoad?.setTextColor(Color.parseColor("#D50000"))
+        fragmentMainBinding?.tvLoad?.text = "Calculando eCommercios Próximos"
 
-            val runnable = Runnable {
-                if (ecommerceList[0].distance == null) {
-                    onClickResult()
-                } else {
-                    binding?.progressBar?.visibility = View.GONE
-                    binding?.tvLoad?.visibility = View.GONE
-                    val intent = Intent(activity, ResultActivity::class.java)
-                    activity?.startActivity(intent)
-                }
+        val runnable = Runnable {
+            if (ecommerceList[0].distance == null) {
+                onClickResult()
+            } else {
+                fragmentMainBinding?.progressBar?.visibility = View.GONE
+                fragmentMainBinding?.tvLoad?.visibility = View.GONE
+
+                //Navigation Drawer
+                val intent = Intent(mActivityHome, ListActivity::class.java)
+                mActivityHome?.startActivity(intent)
+
             }
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed(runnable, 1000)
+        }
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(runnable, 1000)
     }
 
+
+    fun setDetailBinding(activityDetailBinding: ActivityDetailBinding, context: Context) {
+
+        this.activityDetailBinding = activityDetailBinding
+        this.mContextDetail = context
+
+        activityDetailBinding.toolbarMain.title = "  Detalle eComercio"
+        activityDetailBinding.toolbarMain.setLogo(R.drawable.ico_personal)
+
+        thisEcommerce = getEcommerceCompanion(myItem)
+
+        val mAddress: String =
+            thisEcommerce?.address?.street + ", " + thisEcommerce?.address?.zip + " , " + thisEcommerce?.address?.city + "," + thisEcommerce?.address?.country
+
+        activityDetailBinding.tvDnombre.text = thisEcommerce?.name.toString()
+        activityDetailBinding.tvDshortDescription.text = thisEcommerce?.shortDescription
+        activityDetailBinding.tvDdireccion.text = mAddress
+        activityDetailBinding.tvDemail.text = thisEcommerce?.contact?.email
+        activityDetailBinding.tvDtelefono.text = thisEcommerce?.contact?.phone
+
+
+        //Cargo el logo almacenado con Picasso
+        if ((thisEcommerce?.logo?.url) != null) {
+            Picasso.get().load(thisEcommerce?.logo?.url).placeholder(R.drawable.nologo)
+                .into(activityDetailBinding.imLogo)
+
+        } else {
+            Picasso.get().load(R.drawable.noimage).into(activityDetailBinding.imLogo)
+        }
+    }
+
+    fun sendEmail() {
+        val miEmail =
+            arrayOf<String>(thisEcommerce?.contact!!.email) //Tengo que hacer este cast raro si o si, sino no me aparece email
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:") // only email apps should handle this
+            putExtra(Intent.EXTRA_EMAIL, miEmail)
+            putExtra(Intent.EXTRA_SUBJECT, " Soy Antonio J Morales -->Contráteme Xdd ")
+        }
+
+        if (mContextDetail?.let { intent.resolveActivity(it.packageManager) } != null) {
+            mContextDetail?.startActivity(intent)
+        }
+    }
+
+    fun callDialer() {
+        if (thisEcommerce?.contact?.phone != "" || thisEcommerce?.contact?.phone != null) {
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:" + thisEcommerce?.contact?.phone)
+
+            if (mContextDetail?.packageManager?.let { intent.resolveActivity(it) } != null) {
+                mContextDetail?.startActivity(intent)
+            }
+        } else {
+            Toast.makeText(
+                mContextDetail,
+                "No hay teléfono en ese campo",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    fun launchMaps() {
+        if (thisEcommerce?.myLocation != null) {
+            val intentUri =
+                Uri.parse("geo:" + thisEcommerce?.latitude + "?z=16&q=" + thisEcommerce?.longitude + "(" + thisEcommerce?.address?.street + "," + thisEcommerce?.address?.city + "," + thisEcommerce?.address?.country + ")")
+            val intent = Intent(Intent.ACTION_VIEW, intentUri)
+            mContextDetail?.startActivity(intent)
+        } else {
+            Toast.makeText(
+                mContextDetail,
+                "No hay dirección o esta en formato incorrecto",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    fun callTwitter() {
+        val miUri: String? = thisEcommerce?.social?.twitter
+        if (URLUtil.isValidUrl(miUri)) {
+            mContextDetail?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
+        } else {
+            Toast.makeText(
+                mContextDetail,
+                "No hay Twitter o enlace erroneo",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    fun callInstagram() {
+        val miUri: String? = thisEcommerce?.social?.instagram
+        if (URLUtil.isValidUrl(miUri)) {
+            mContextDetail?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
+        } else {
+            Toast.makeText(
+                mContextDetail,
+                "No hay Instagram o enlace erroneo",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    fun callFacebook() {
+        val miUri: String? = thisEcommerce?.social?.facebook
+        if (URLUtil.isValidUrl(miUri)) {
+            mContextDetail?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(miUri)))
+        } else {
+            Toast.makeText(
+                mContextDetail,
+                "No hay Facebook o enlace erroneo",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 }
+
+
+
