@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="model"
+            name="main_vm"
             type="antoniomy82.ecommerce.viewmodel.EcommerceViewModel" />
 
     </data>
@@ -100,7 +100,7 @@
                         app:layout_constraintHorizontal_bias="0.505"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/imGPS"
-                        android:onClick="@{()->model.onClickResult()}" />
+                        android:onClick="@{()->main_vm.onClickResult()}" />
 
                     <TextView
                         android:id="@+id/tvLoad"
@@ -126,7 +126,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/sp_category"
-                        android:text="@{model.myAddress}" />
+                        android:text="@{main_vm.myAddress}" />
 
                     <ImageView
                         android:id="@+id/imGPS"
@@ -139,7 +139,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edDireccion"
                         app:srcCompat="@drawable/im_location"
-                        android:onClick="@{()->model.onClickGPS()}" />
+                        android:onClick="@{()->main_vm.onClickGPS()}" />
 
                     <ProgressBar
                         android:id="@+id/progressBar"

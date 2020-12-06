@@ -24,7 +24,7 @@
                 <data android:scheme="mailto" />
             </intent-filter>
         </activity>
-        <activity android:name="antoniomy82.ecommerce.ui.ResultActivity" />
+        <activity android:name="antoniomy82.ecommerce.ui.ListActivity" />
         <activity android:name="antoniomy82.ecommerce.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
